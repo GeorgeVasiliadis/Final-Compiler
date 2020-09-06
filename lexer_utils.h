@@ -1,0 +1,1 @@
+int check_if_reserved(char *);
