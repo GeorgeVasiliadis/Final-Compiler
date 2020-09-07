@@ -638,10 +638,10 @@ static const yytype_int16 yyrline[] =
 {
        0,    44,    44,    51,    57,    62,    67,    70,    76,    79,
       82,    87,    90,    93,    96,   102,   105,   108,   111,   114,
-     122,   131,   138,   147,   153,   161,   166,   172,   174,   181,
-     190,   196,   201,   206,   210,   214,   218,   222,   227,   232,
-     239,   249,   262,   270,   278,   286,   294,   302,   312,   321,
-     329,   337,   346,   354,   362,   368,   375,   379,   387,   395
+     122,   131,   138,   148,   154,   162,   167,   173,   175,   182,
+     191,   197,   202,   207,   211,   215,   219,   223,   228,   233,
+     240,   250,   263,   271,   279,   287,   295,   303,   313,   322,
+     330,   338,   347,   355,   363,   369,   376,   380,   388,   396
 };
 #endif
 
@@ -1443,7 +1443,7 @@ yyreduce:
 #line 123 "final.yacc"
                                                 {
 							smb = ST_pop(st);
-							Symbol *dummy = ST_pop(st);
+							Symbol *dummy = (yyvsp[-2].p_astn)->wrapped_symbol;
 							ST_push(st, smb);
 							(yyval.p_astn) = ASTN_init(ASTN_DECLARATION, dummy, (yyvsp[-1].p_astn), NULL, NULL, NULL);
 						}
@@ -1455,7 +1455,7 @@ yyreduce:
                                                 {
 							smb = SMB_init("");
 							smb->var_type = TYPE_INT;
-							ST_push(st, smb);
+							(yyval.p_astn) = ASTN_init(ASTN_TYPE, smb, NULL, NULL, NULL, NULL);
 						}
 #line 1461 "y.tab.c"
     break;
@@ -1466,13 +1466,13 @@ yyreduce:
 							
 							smb = SMB_init("");
 							smb->var_type = TYPE_FLOAT;
-							ST_push(st, smb);
+							(yyval.p_astn) = ASTN_init(ASTN_TYPE, smb, NULL, NULL, NULL, NULL);
 						}
 #line 1472 "y.tab.c"
     break;
 
   case 23:
-#line 148 "final.yacc"
+#line 149 "final.yacc"
                                                 {
 							smb = SMB_init((yyvsp[-2].ystr));
 							ST_push(st, smb);
@@ -1482,7 +1482,7 @@ yyreduce:
     break;
 
   case 24:
-#line 154 "final.yacc"
+#line 155 "final.yacc"
                                                 {
 							smb = SMB_init((yyvsp[0].ystr));
 							ST_push(st, smb);
@@ -1492,28 +1492,28 @@ yyreduce:
     break;
 
   case 25:
-#line 162 "final.yacc"
+#line 163 "final.yacc"
                                                 {
 						}
 #line 1499 "y.tab.c"
     break;
 
   case 26:
-#line 167 "final.yacc"
+#line 168 "final.yacc"
                                                 {
 						}
 #line 1506 "y.tab.c"
     break;
 
   case 27:
-#line 172 "final.yacc"
+#line 173 "final.yacc"
                                                 {
 						}
 #line 1513 "y.tab.c"
     break;
 
   case 28:
-#line 175 "final.yacc"
+#line 176 "final.yacc"
                                                 {
 							smb = ST_pop(st);
 							ST_push(st, smb);
@@ -1523,7 +1523,7 @@ yyreduce:
     break;
 
   case 29:
-#line 182 "final.yacc"
+#line 183 "final.yacc"
                                                 {
 							smb = ST_pop(st);
 							ST_push(st, smb);
@@ -1533,7 +1533,7 @@ yyreduce:
     break;
 
   case 30:
-#line 191 "final.yacc"
+#line 192 "final.yacc"
                                                 {
 								
 						}
@@ -1541,63 +1541,63 @@ yyreduce:
     break;
 
   case 31:
-#line 197 "final.yacc"
+#line 198 "final.yacc"
                                                 {							
 						}
 #line 1548 "y.tab.c"
     break;
 
   case 32:
-#line 202 "final.yacc"
+#line 203 "final.yacc"
                                                 {							
 						}
 #line 1555 "y.tab.c"
     break;
 
   case 33:
-#line 207 "final.yacc"
+#line 208 "final.yacc"
                                                 {
 						}
 #line 1562 "y.tab.c"
     break;
 
   case 34:
-#line 210 "final.yacc"
+#line 211 "final.yacc"
                                                 {
 						}
 #line 1569 "y.tab.c"
     break;
 
   case 35:
-#line 215 "final.yacc"
+#line 216 "final.yacc"
                                                 {
 						}
 #line 1576 "y.tab.c"
     break;
 
   case 36:
-#line 218 "final.yacc"
+#line 219 "final.yacc"
                                                 {
 						}
 #line 1583 "y.tab.c"
     break;
 
   case 37:
-#line 223 "final.yacc"
+#line 224 "final.yacc"
                                                 {
 						}
 #line 1590 "y.tab.c"
     break;
 
   case 38:
-#line 228 "final.yacc"
+#line 229 "final.yacc"
                                                 {
 						}
 #line 1597 "y.tab.c"
     break;
 
   case 39:
-#line 233 "final.yacc"
+#line 234 "final.yacc"
                                                 {	
 							ST_pop(st);
 							smb = ST_pop(st);
@@ -1608,7 +1608,7 @@ yyreduce:
     break;
 
   case 40:
-#line 240 "final.yacc"
+#line 241 "final.yacc"
                                                 {
 							ST_pop(st);
 							ST_pop(st);
@@ -1620,7 +1620,7 @@ yyreduce:
     break;
 
   case 41:
-#line 250 "final.yacc"
+#line 251 "final.yacc"
                                                 {
 							ST_pop(st);
 							ST_pop(st);
@@ -1632,7 +1632,7 @@ yyreduce:
     break;
 
   case 42:
-#line 263 "final.yacc"
+#line 264 "final.yacc"
                                                 {
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
@@ -1644,7 +1644,7 @@ yyreduce:
     break;
 
   case 43:
-#line 271 "final.yacc"
+#line 272 "final.yacc"
                                                 {
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
@@ -1656,7 +1656,7 @@ yyreduce:
     break;
 
   case 44:
-#line 279 "final.yacc"
+#line 280 "final.yacc"
                                                 {
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
@@ -1668,7 +1668,7 @@ yyreduce:
     break;
 
   case 45:
-#line 287 "final.yacc"
+#line 288 "final.yacc"
                                                 {
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
@@ -1680,7 +1680,7 @@ yyreduce:
     break;
 
   case 46:
-#line 295 "final.yacc"
+#line 296 "final.yacc"
                                                 {
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
@@ -1692,7 +1692,7 @@ yyreduce:
     break;
 
   case 47:
-#line 303 "final.yacc"
+#line 304 "final.yacc"
                                                 {
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
@@ -1704,7 +1704,7 @@ yyreduce:
     break;
 
   case 48:
-#line 313 "final.yacc"
+#line 314 "final.yacc"
                                                 {
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
@@ -1717,7 +1717,7 @@ yyreduce:
     break;
 
   case 49:
-#line 322 "final.yacc"
+#line 323 "final.yacc"
                                                 {
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
@@ -1729,7 +1729,7 @@ yyreduce:
     break;
 
   case 50:
-#line 330 "final.yacc"
+#line 331 "final.yacc"
                                                 {
 							smb = ST_pop(st);
 							ST_push(st, smb);
@@ -1739,7 +1739,7 @@ yyreduce:
     break;
 
   case 51:
-#line 338 "final.yacc"
+#line 339 "final.yacc"
                                                 {
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
@@ -1752,7 +1752,7 @@ yyreduce:
     break;
 
   case 52:
-#line 347 "final.yacc"
+#line 348 "final.yacc"
                                                 {
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
@@ -1764,7 +1764,7 @@ yyreduce:
     break;
 
   case 53:
-#line 355 "final.yacc"
+#line 356 "final.yacc"
                                                 {
 							smb = ST_pop(st);
 							ST_push(st, smb);
@@ -1774,7 +1774,7 @@ yyreduce:
     break;
 
   case 54:
-#line 363 "final.yacc"
+#line 364 "final.yacc"
                                                 {
 							smb = ST_pop(st);
 							ST_push(st, smb);
@@ -1784,7 +1784,7 @@ yyreduce:
     break;
 
   case 55:
-#line 369 "final.yacc"
+#line 370 "final.yacc"
                                                 {
 							smb = ST_pop(st);
 							smb = check_uminus(smb);
@@ -1795,7 +1795,7 @@ yyreduce:
     break;
 
   case 56:
-#line 376 "final.yacc"
+#line 377 "final.yacc"
                                                 {
 
 						}
@@ -1803,7 +1803,7 @@ yyreduce:
     break;
 
   case 57:
-#line 380 "final.yacc"
+#line 381 "final.yacc"
                                                 {
 							smb = ST_pop(st);
 							ST_push(st, smb);
@@ -1813,7 +1813,7 @@ yyreduce:
     break;
 
   case 58:
-#line 388 "final.yacc"
+#line 389 "final.yacc"
                                                 {
 							smb = SMB_init((yyvsp[0].ystr));
 							smb->var_type = TYPE_INT;
@@ -1825,7 +1825,7 @@ yyreduce:
     break;
 
   case 59:
-#line 396 "final.yacc"
+#line 397 "final.yacc"
                                                 {
 							smb = SMB_init((yyvsp[0].ystr));
 							smb->var_type = TYPE_FLOAT;
@@ -2031,4 +2031,4 @@ yyreturn:
   return yyresult;
 }
 
-#line 405 "final.yacc"
+#line 406 "final.yacc"

@@ -1,22 +1,10 @@
 mainclass Test {
 	public static void main ( )
 	{
-		int george, dimi;
-		if(2==2){
-			println(1);
-			if(2<=135){
-				println(2);
-			}
-			
-			else{
-				println(3);
-			}
-			println(4);
-		}
-		if(0!=0){
-			println(5);
-		} else {
-			println(6);
-		}
+		int george, dimitra;
+		int a, b, c, d ,e;
+		float a;
+		float a, b, george, dimitra;
+		int k;
 	}
 }

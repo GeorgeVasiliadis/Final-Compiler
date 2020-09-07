@@ -122,7 +122,7 @@ simple_stmt		:	assign_stmt
 declaration		:	type id_list ';'
 						{
 							smb = ST_pop(st);
-							Symbol *dummy = ST_pop(st);
+							Symbol *dummy = $1->wrapped_symbol;
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_DECLARATION, dummy, $2, NULL, NULL, NULL);
 						}
@@ -132,7 +132,7 @@ type			:	INT
 						{
 							smb = SMB_init("");
 							smb->var_type = TYPE_INT;
-							ST_push(st, smb);
+							$$ = ASTN_init(ASTN_TYPE, smb, NULL, NULL, NULL, NULL);
 						}
 			|
 				FLOAT
@@ -140,8 +140,9 @@ type			:	INT
 							
 							smb = SMB_init("");
 							smb->var_type = TYPE_FLOAT;
-							ST_push(st, smb);
+							$$ = ASTN_init(ASTN_TYPE, smb, NULL, NULL, NULL, NULL);
 						}
+			;
 
 
 id_list			:	ID ',' id_list

@@ -5,3 +5,6 @@ eite - 5 < (-3 < -2) --> 1
 
 2) what should the output be?
 println(-2.4/-1.235 <= 0);
+
+3) ensure no id is ever declared twice
+int a; int a; float a;
