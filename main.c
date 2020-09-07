@@ -18,6 +18,7 @@ void yyerror(char const *err){
 void traverse(AST_Node *root){
 	if(root){
 	Symbol *smb;
+	AST_Node *temp;
 	//---
 	//printf("START___%d___START\n", root->node_type);
 	//---
@@ -29,6 +30,20 @@ void traverse(AST_Node *root){
 			case ASTN_STMT_LIST:
 				traverse(root->p_nodelist[0]);
 				traverse(root->p_nodelist[1]);
+				break;
+			case ASTN_DECLARATION:
+				temp = root->p_nodelist[0];
+				int var_type = root->wrapped_symbol->var_type;
+				while(temp){
+					temp->wrapped_symbol->var_type = var_type;
+					if(var_type == TYPE_INT){
+						temp->wrapped_symbol->value.i = 0;
+					} else if (var_type == TYPE_FLOAT){
+						temp->wrapped_symbol->value.f = 0;
+					}
+					SMB_print(temp->wrapped_symbol);
+					temp = temp->p_nodelist[0];
+				}
 				break;
 			case ASTN_IF_STMT:
 				if(root->wrapped_symbol->value.i){

@@ -1,6 +1,7 @@
 mainclass Test {
 	public static void main ( )
 	{
+		int george, dimi;
 		if(2==2){
 			println(1);
 			if(2<=135){

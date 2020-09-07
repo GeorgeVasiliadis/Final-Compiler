@@ -32,8 +32,8 @@ Symbol *smb;
 
 %token <ystr> ID
 
-%type <p_astn> program comp_stmt stmt_list stmt open_stmt closed_stmt simple_stmt declaration type
-%type <p_astn> id_list null_stmt assign_stmt assign_expr expr open_for_stmt closed_for_stmt 
+%type <p_astn> program comp_stmt stmt_list stmt open_stmt closed_stmt simple_stmt declaration
+%type <p_astn> id_list null_stmt assign_stmt assign_expr expr open_for_stmt closed_for_stmt type
 %type <p_astn> opassign_expr opbool_expr open_while_stmt closed_while_stmt open_if_stmt closed_if_stmt
 %type <p_astn> bool_expr r_val term factor num
 
@@ -121,22 +121,40 @@ simple_stmt		:	assign_stmt
 						
 declaration		:	type id_list ';'
 						{
+							smb = ST_pop(st);
+							Symbol *dummy = ST_pop(st);
+							ST_push(st, smb);
+							$$ = ASTN_init(ASTN_DECLARATION, dummy, $2, NULL, NULL, NULL);
 						}
 			;
-					
+			
 type			:	INT
 						{
+							smb = SMB_init("");
+							smb->var_type = TYPE_INT;
+							ST_push(st, smb);
 						}
-			|	FLOAT
+			|
+				FLOAT
 						{
+							
+							smb = SMB_init("");
+							smb->var_type = TYPE_FLOAT;
+							ST_push(st, smb);
 						}
-			;
+
 
 id_list			:	ID ',' id_list
 						{
+							smb = SMB_init($1);
+							ST_push(st, smb);
+							$$ = ASTN_init(ASTN_ID_LIST, smb, $3, NULL, NULL, NULL);
 						}
 			|	ID
 						{
+							smb = SMB_init($1);
+							ST_push(st, smb);
+							$$ = ASTN_init(ASTN_ID_LIST, smb, NULL, NULL, NULL, NULL);
 						}
 			;
 
@@ -171,7 +189,7 @@ expr
 	
 assign_expr		:	ID '=' expr
 						{
-							
+								
 						}
 			;
 							
