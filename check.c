@@ -120,3 +120,123 @@ Symbol *check_mult(Symbol *op1, Symbol *op2){
 	}
 	return(p);
 }
+
+Symbol *check_eq(Symbol *op1, Symbol *op2){
+	Symbol *p = SMB_init("");
+	p->var_type = TYPE_INT;
+	
+	if(op1->var_type == TYPE_INT){
+		if(op2->var_type == TYPE_INT){		
+			p->value.i = op1->value.i == op2->value.i;
+		} else if (op2->var_type == TYPE_FLOAT) {
+			p->value.i = op1->value.i == op2->value.f;	
+		}
+	} else if (op1->var_type == TYPE_FLOAT){
+		if(op2->var_type == TYPE_INT){
+			p->value.i = op1->value.f == op2->value.i;
+		} else if (op2->var_type == TYPE_FLOAT) {
+			p->value.i = op1->value.f == op2->value.f;
+		}
+	}
+	return(p);
+}
+
+Symbol *check_lt(Symbol *op1, Symbol *op2){
+	Symbol *p = SMB_init("");
+	p->var_type = TYPE_INT;
+	
+	if(op1->var_type == TYPE_INT){
+		if(op2->var_type == TYPE_INT){		
+			p->value.i = op1->value.i < op2->value.i;
+		} else if (op2->var_type == TYPE_FLOAT) {
+			p->value.i = op1->value.i < op2->value.f;	
+		}
+	} else if (op1->var_type == TYPE_FLOAT){
+		if(op2->var_type == TYPE_INT){
+			p->value.i = op1->value.f < op2->value.i;
+		} else if (op2->var_type == TYPE_FLOAT) {
+			p->value.i = op1->value.f < op2->value.f;
+		}
+	}
+	return(p);
+}
+
+Symbol *check_gt(Symbol *op1, Symbol *op2){
+	Symbol *p = SMB_init("");
+	p->var_type = TYPE_INT;
+	
+	if(op1->var_type == TYPE_INT){
+		if(op2->var_type == TYPE_INT){		
+			p->value.i = op1->value.i > op2->value.i;
+		} else if (op2->var_type == TYPE_FLOAT) {
+			p->value.i = op1->value.i > op2->value.f;	
+		}
+	} else if (op1->var_type == TYPE_FLOAT){
+		if(op2->var_type == TYPE_INT){
+			p->value.i = op1->value.f > op2->value.i;
+		} else if (op2->var_type == TYPE_FLOAT) {
+			p->value.i = op1->value.f > op2->value.f;
+		}
+	}
+	return(p);
+}
+
+Symbol *check_le(Symbol *op1, Symbol *op2){
+	Symbol *p = SMB_init("");
+	p->var_type = TYPE_INT;
+	
+	if(op1->var_type == TYPE_INT){
+		if(op2->var_type == TYPE_INT){		
+			p->value.i = op1->value.i <= op2->value.i;
+		} else if (op2->var_type == TYPE_FLOAT) {
+			p->value.i = op1->value.i <= op2->value.f;	
+		}
+	} else if (op1->var_type == TYPE_FLOAT){
+		if(op2->var_type == TYPE_INT){
+			p->value.i = op1->value.f <= op2->value.i;
+		} else if (op2->var_type == TYPE_FLOAT) {
+			p->value.i = op1->value.f <= op2->value.f;
+		}
+	}
+	return(p);
+}
+
+Symbol *check_ge(Symbol *op1, Symbol *op2){
+	Symbol *p = SMB_init("");
+	p->var_type = TYPE_INT;
+	
+	if(op1->var_type == TYPE_INT){
+		if(op2->var_type == TYPE_INT){		
+			p->value.i = op1->value.i >= op2->value.i;
+		} else if (op2->var_type == TYPE_FLOAT) {
+			p->value.i = op1->value.i >= op2->value.f;	
+		}
+	} else if (op1->var_type == TYPE_FLOAT){
+		if(op2->var_type == TYPE_INT){
+			p->value.i = op1->value.f >= op2->value.i;
+		} else if (op2->var_type == TYPE_FLOAT) {
+			p->value.i = op1->value.f >= op2->value.f;
+		}
+	}
+	return(p);
+}
+
+Symbol *check_ne(Symbol *op1, Symbol *op2){
+	Symbol *p = SMB_init("");
+	p->var_type = TYPE_INT;
+	
+	if(op1->var_type == TYPE_INT){
+		if(op2->var_type == TYPE_INT){		
+			p->value.i = op1->value.i != op2->value.i;
+		} else if (op2->var_type == TYPE_FLOAT) {
+			p->value.i = op1->value.i != op2->value.f;	
+		}
+	} else if (op1->var_type == TYPE_FLOAT){
+		if(op2->var_type == TYPE_INT){
+			p->value.i = op1->value.f != op2->value.i;
+		} else if (op2->var_type == TYPE_FLOAT) {
+			p->value.i = op1->value.f != op2->value.f;
+		}
+	}
+	return(p);
+}

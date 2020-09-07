@@ -159,6 +159,14 @@ expr
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_EXPR, smb, NULL, NULL, NULL, NULL);
 						}
+// THIS SECTION SHOULD BE DELETED _START_
+			|	bool_expr
+						{
+							smb = ST_pop(st);
+							ST_push(st, smb);
+							$$ = ASTN_init(ASTN_EXPR, smb, NULL, NULL, NULL, NULL);
+						}
+// THIS SECTION SHOULD BE DELETED _STOP_
 			;	
 	
 assign_expr		:	ID '=' expr
@@ -221,22 +229,51 @@ closed_if_stmt		:	IF '(' bool_expr ')' closed_stmt ELSE closed_stmt
 							
 bool_expr		:	expr EQ_OP expr
 						{
-							
+							Symbol *temp = ST_pop(st);
+							smb = ST_pop(st);
+							smb = check_eq(smb, temp);
+							ST_push(st, smb);
+							$$ = ASTN_init(ASTN_BOOL_EXPR, smb, NULL, NULL, NULL, NULL);
 						}
 			|	expr LT_OP expr
 						{
+							Symbol *temp = ST_pop(st);
+							smb = ST_pop(st);
+							smb = check_lt(smb, temp);
+							ST_push(st, smb);
+							$$ = ASTN_init(ASTN_BOOL_EXPR, smb, NULL, NULL, NULL, NULL);
 						}
 			|	expr GT_OP expr
 						{
+							Symbol *temp = ST_pop(st);
+							smb = ST_pop(st);
+							smb = check_gt(smb, temp);
+							ST_push(st, smb);
+							$$ = ASTN_init(ASTN_BOOL_EXPR, smb, NULL, NULL, NULL, NULL);
 						}
 			|	expr LE_OP expr
 						{
+							Symbol *temp = ST_pop(st);
+							smb = ST_pop(st);
+							smb = check_le(smb, temp);
+							ST_push(st, smb);
+							$$ = ASTN_init(ASTN_BOOL_EXPR, smb, NULL, NULL, NULL, NULL);
 						}
 			|	expr GE_OP expr
 						{
+							Symbol *temp = ST_pop(st);
+							smb = ST_pop(st);
+							smb = check_ge(smb, temp);
+							ST_push(st, smb);
+							$$ = ASTN_init(ASTN_BOOL_EXPR, smb, NULL, NULL, NULL, NULL);
 						}
 			|	expr NE_OP expr
 						{
+							Symbol *temp = ST_pop(st);
+							smb = ST_pop(st);
+							smb = check_ne(smb, temp);
+							ST_push(st, smb);
+							$$ = ASTN_init(ASTN_BOOL_EXPR, smb, NULL, NULL, NULL, NULL);
 						}
 			;
 
