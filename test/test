@@ -1,5 +1,15 @@
-mainclass George_Vasiliadis {
+mainclass Test {
 	public static void main ( )
 	{
+		if(2==2){
+			println(1);
+			if(2<=135){
+				println(2<=135);
+			}
+			
+			if(-2.4/-1.235 <= 0){
+				println(-2.4/-1.235 <= 0);
+			}
+		}	
 	}
 }

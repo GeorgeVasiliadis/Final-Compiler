@@ -212,7 +212,10 @@ closed_while_stmt	:	WHILE '(' bool_expr ')' closed_stmt
 			;
 
 open_if_stmt		:	IF '(' bool_expr ')' stmt
-						{						
+						{	
+							ST_pop(st);
+							smb = ST_pop(st);
+							$$ = ASTN_init(ASTN_IF_STMT, smb, $5, NULL, NULL, NULL);
 						}
 			|	IF '(' bool_expr ')' closed_stmt ELSE open_stmt
 						{

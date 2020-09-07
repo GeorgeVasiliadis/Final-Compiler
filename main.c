@@ -24,6 +24,16 @@ void traverse(AST_Node *root){
 		switch (root->node_type){
 			case ASTN_PROGRAM:
 				printf("Program: %s\n", root->wrapped_symbol->name);
+				traverse(root->p_nodelist[0]);
+				break;
+			case ASTN_STMT_LIST:
+				traverse(root->p_nodelist[0]);
+				traverse(root->p_nodelist[1]);
+				break;
+			case ASTN_IF_STMT:
+				if(root->wrapped_symbol->value.i){
+					traverse(root->p_nodelist[0]);
+				}
 				break;
 			case ASTN_PRINTLN:
 				smb = root->wrapped_symbol; 
@@ -33,11 +43,6 @@ void traverse(AST_Node *root){
 					printf("%g\n", smb->value.f);
 				}
 				break;
-		}
-	
-		
-		for(int i=0; i<4; i++){
-			traverse(root->p_nodelist[i]);
 		}
 	//---
 	//printf("END___%d___END\n", root->node_type);

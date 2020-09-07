@@ -2,4 +2,4 @@
 
 yacc -d final.yacc
 flex final.flex
-gcc *.c
+gcc -g *.c
