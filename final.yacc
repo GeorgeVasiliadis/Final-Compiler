@@ -215,15 +215,26 @@ open_if_stmt		:	IF '(' bool_expr ')' stmt
 						{	
 							ST_pop(st);
 							smb = ST_pop(st);
+							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_IF_STMT, smb, $5, NULL, NULL, NULL);
 						}
 			|	IF '(' bool_expr ')' closed_stmt ELSE open_stmt
 						{
+							ST_pop(st);
+							ST_pop(st);
+							smb = ST_pop(st);
+							ST_push(st, smb);
+							$$ = ASTN_init(ASTN_IF_STMT, smb, $5, $7, NULL, NULL);
 						}
 			;
 
 closed_if_stmt		:	IF '(' bool_expr ')' closed_stmt ELSE closed_stmt
 						{
+							ST_pop(st);
+							ST_pop(st);
+							smb = ST_pop(st);
+							ST_push(st, smb);
+							$$ = ASTN_init(ASTN_IF_STMT, smb, $5, $7, NULL, NULL);
 						}
 			;
 

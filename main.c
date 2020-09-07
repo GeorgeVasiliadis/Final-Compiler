@@ -33,6 +33,8 @@ void traverse(AST_Node *root){
 			case ASTN_IF_STMT:
 				if(root->wrapped_symbol->value.i){
 					traverse(root->p_nodelist[0]);
+				} else {
+					traverse(root->p_nodelist[1]);
 				}
 				break;
 			case ASTN_PRINTLN:

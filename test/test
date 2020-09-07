@@ -4,12 +4,18 @@ mainclass Test {
 		if(2==2){
 			println(1);
 			if(2<=135){
-				println(2<=135);
+				println(2);
 			}
 			
-			if(-2.4/-1.235 <= 0){
-				println(-2.4/-1.235 <= 0);
+			else{
+				println(3);
 			}
-		}	
+			println(4);
+		}
+		if(0!=0){
+			println(5);
+		} else {
+			println(6);
+		}
 	}
 }
