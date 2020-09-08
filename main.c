@@ -18,7 +18,7 @@ void yyerror(char const *err){
  
 void traverse(AST_Node *root){
 	if(root){
-	printf("\n<------>\n");
+	printf("<------>\n");
 	int var_type;
 	Symbol *smb;
 	AST_Node *temp;
@@ -30,6 +30,7 @@ void traverse(AST_Node *root){
 
 
 			case ASTN_STMT_LIST:
+				printf("Statement List\n");
 				traverse(root->p_nodelist[0]);
 				traverse(root->p_nodelist[1]);
 				break;
@@ -48,8 +49,10 @@ void traverse(AST_Node *root){
 			case ASTN_IF_STMT:
 				printf("If:\n");
 				if(root->wrapped_symbol->value.i){
+					printf("Chose \"IF\" side\n");
 					traverse(root->p_nodelist[0]);
 				} else {
+					printf("Chose \"NOT-IF\" side\n");
 					traverse(root->p_nodelist[1]);
 				}
 				break;

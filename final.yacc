@@ -35,7 +35,7 @@ Symbol *smb;
 %type <p_astn> program comp_stmt stmt_list stmt open_stmt closed_stmt simple_stmt declaration
 %type <p_astn> id_list null_stmt assign_stmt assign_expr expr open_for_stmt closed_for_stmt type
 %type <p_astn> opassign_expr opbool_expr open_while_stmt closed_while_stmt open_if_stmt closed_if_stmt
-%type <p_astn> bool_expr r_val term factor num
+%type <p_astn> println_stmt bool_expr r_val term factor num
 
 %start program
 
@@ -66,6 +66,7 @@ stmt_list		:	stmt_list stmt
 					
 stmt			:	open_stmt
 						{
+							$$ = $1;
 						}
 			|	closed_stmt
 						{
@@ -75,23 +76,29 @@ stmt			:	open_stmt
 
 open_stmt		:	open_for_stmt
 						{
+							$$ = ASTN_init(ASTN_STMT, NULL, $1, NULL, NULL, NULL);
 						}
 			|	open_while_stmt
 						{
+							$$ = ASTN_init(ASTN_STMT, NULL, $1, NULL, NULL, NULL);
 						}
 			|	open_if_stmt
 						{
+							$$ = ASTN_init(ASTN_STMT, NULL, $1, NULL, NULL, NULL);
 						}
 			;
 
 closed_stmt		:	closed_for_stmt
 						{
+							$$ = ASTN_init(ASTN_STMT, NULL, $1, NULL, NULL, NULL);
 						}
 			|	closed_while_stmt
 						{
+							$$ = ASTN_init(ASTN_STMT, NULL, $1, NULL, NULL, NULL);
 						}
 			|	closed_if_stmt
 						{
+							$$ = ASTN_init(ASTN_STMT, NULL, $1, NULL, NULL, NULL);
 						}
 			|	simple_stmt
 						{
@@ -101,17 +108,29 @@ closed_stmt		:	closed_for_stmt
 	
 simple_stmt		:	assign_stmt
 						{
+							$$ = ASTN_init(ASTN_STMT, NULL, $1, NULL, NULL, NULL);
 						}
 			|	comp_stmt
 						{
+							$$ = ASTN_init(ASTN_STMT, NULL, $1, NULL, NULL, NULL);
 						}
 			|	declaration
 						{
+							$$ = ASTN_init(ASTN_STMT, NULL, $1, NULL, NULL, NULL);
 						}
 			|	null_stmt
 						{
+							$$ = ASTN_init(ASTN_STMT, NULL, NULL, NULL, NULL, NULL);
 						}
-			|	PRINTLN '(' expr ')' ';'
+
+			|	println_stmt
+						{
+							$$ = ASTN_init(ASTN_STMT, NULL, $1, NULL, NULL, NULL);
+						}
+			;
+			
+			
+println_stmt		:	PRINTLN '(' expr ')' ';'
 						{
 							smb = ST_pop(st);
 							check_println(smb);
@@ -142,7 +161,6 @@ type			:	INT
 							$$ = ASTN_init(ASTN_TYPE, smb, NULL, NULL, NULL, NULL);
 						}
 			;
-
 
 id_list			:	ID ',' id_list
 						{
@@ -193,11 +211,13 @@ expr
 
 opassign_expr		:	assign_expr
 						{
-							$$ = $1;
+							smb = ST_pop(st);
+							ST_push(st, smb);
+							$$ = ASTN_init(ASTN_OPASSIGN_EXPR, smb, NULL, NULL, NULL, NULL);
 						}
 			|	/* EMPTY */
 						{
-							$$ = NULL;
+							$$ = ASTN_init(ASTN_OPASSIGN_EXPR, NULL, NULL, NULL, NULL, NULL);
 						}	
 			;
 	
@@ -213,31 +233,46 @@ assign_expr		:	ID '=' expr
 							
 							
 open_for_stmt		:	FOR '(' opassign_expr ';' opbool_expr ';' opassign_expr ')' open_stmt
-						{							
+						{
+							ST_pop(st);
+							smb = ST_pop(st);
+							ST_pop(st);
+							$$ = ASTN_init(ASTN_FOR_STMT, smb, $3, $7, NULL, NULL);
 						}
 			;
 
 closed_for_stmt		:	FOR '(' opassign_expr ';' opbool_expr ';' opassign_expr ')' closed_stmt
-						{							
+						{
+							ST_pop(st);
+							smb = ST_pop(st);
+							ST_pop(st);
+							$$ = ASTN_init(ASTN_FOR_STMT, smb, $3, $7, NULL, NULL); 						
 						}
 			;
 
 						
 opbool_expr		:	bool_expr
 						{
+							smb = ST_pop(st);
+							$$ = ASTN_init(ASTN_OPBOOL_EXPR, smb, NULL, NULL, NULL, NULL);
 						}
 			|	/* EMPTY */
 						{
+							$$ = ASTN_init(ASTN_OPBOOL_EXPR, NULL, NULL, NULL, NULL, NULL);
 						}
 			;
 							
 open_while_stmt		:	WHILE '(' bool_expr ')' open_stmt
 						{
+							smb = ST_pop(st);
+							$$ = ASTN_init(ASTN_WHILE_STMT, smb, $5, NULL, NULL, NULL);
 						}
 			;
 
 closed_while_stmt	:	WHILE '(' bool_expr ')' closed_stmt
 						{
+							smb = ST_pop(st);
+							$$ = ASTN_init(ASTN_WHILE_STMT, smb, $5, NULL, NULL, NULL);
 						}
 			;
 
@@ -259,9 +294,6 @@ closed_if_stmt		:	IF '(' bool_expr ')' closed_stmt ELSE closed_stmt
 							$$ = ASTN_init(ASTN_IF_STMT, smb, $5, $7, NULL, NULL);
 						}
 			;
-
-
-
 							
 bool_expr		:	expr EQ_OP expr
 						{
