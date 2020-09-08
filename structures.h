@@ -42,7 +42,7 @@ typedef struct Stack{
  
 Hashtable *HT_init(void);
 int HT_keygen(char*);
-void HT_add(Hashtable*, Symbol*);
+Symbol *HT_add(Hashtable*, Symbol*);
 Symbol *HT_get(Hashtable*, char*);
 
 Stack *ST_init(void);

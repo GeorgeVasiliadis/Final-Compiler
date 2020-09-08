@@ -1,10 +1,10 @@
 mainclass Test {
 	public static void main ( )
 	{
-		int george, dimitra;
-		int a, b, c, d ,e;
-		float a;
-		float a, b, george, dimitra;
-		int k;
+		int a, b, c;
+		println(a);
+		println(a+b);
+		c = -(a+b);
+		println(c);
 	}
 }

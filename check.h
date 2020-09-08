@@ -9,3 +9,6 @@ Symbol *check_gt(Symbol*, Symbol*);
 Symbol *check_le(Symbol*, Symbol*);
 Symbol *check_ge(Symbol*, Symbol*);
 Symbol *check_ne(Symbol*, Symbol*);
+Symbol *check_assign(Symbol*, Symbol*);
+void *check_declaration(Symbol*, AST_Node*);
+void check_println(Symbol*);

@@ -12,58 +12,53 @@ extern AST_Node *root;
 
 
 void yyerror(char const *err){
-	printf("MIPS Error >> %s\nYacc >> Rejected", err);
+	fprintf(stderr, "MIPS Error >> %s\nYacc >> Rejected", err);
+	exit(1);
 }
-
+ 
 void traverse(AST_Node *root){
 	if(root){
+	printf("\n<------>\n");
+	int var_type;
 	Symbol *smb;
 	AST_Node *temp;
-	int var_type;
-	//---
-	//printf("START___%d___START\n", root->node_type);
-	//---
 		switch (root->node_type){
 			case ASTN_PROGRAM:
 				printf("Program: %s\n", root->wrapped_symbol->name);
 				traverse(root->p_nodelist[0]);
 				break;
+
+
 			case ASTN_STMT_LIST:
 				traverse(root->p_nodelist[0]);
 				traverse(root->p_nodelist[1]);
 				break;
+
+
 			case ASTN_DECLARATION:
-				var_type = root->wrapped_symbol->var_type;
-				temp = root->p_nodelist[0];
-				while(temp){
-					temp->wrapped_symbol->var_type = var_type;
-					if(var_type == TYPE_INT){
-						temp->wrapped_symbol->value.i = 0;
-					} else if (var_type == TYPE_FLOAT){
-						temp->wrapped_symbol->value.f = 0;
-					}
-					temp = temp->p_nodelist[0];
-				}
+				printf("Declaration:\n");
 				break;
+
+
+			case ASTN_ASSIGN_EXPR:
+				printf("Assign:\n");
+				break;
+
+
 			case ASTN_IF_STMT:
+				printf("If:\n");
 				if(root->wrapped_symbol->value.i){
 					traverse(root->p_nodelist[0]);
 				} else {
 					traverse(root->p_nodelist[1]);
 				}
 				break;
+
+
 			case ASTN_PRINTLN:
-				smb = root->wrapped_symbol; 
-				if(smb->var_type == TYPE_INT){
-					printf("%i\n", smb->value.i);
-				}else if (smb->var_type == TYPE_FLOAT){
-					printf("%g\n", smb->value.f);
-				}
+				printf("Print Line:\n");
 				break;
 		}
-	//---
-	//printf("END___%d___END\n", root->node_type);
-	//---
 	}
 
 }

@@ -55,9 +55,10 @@ int HT_keygen(char *string){
 //	The given symbol can be Null.
 //	Symbol's name is used for distinction.
 //	A symbol will not be added if another symbol
-//	with the same name exists already.
+//	with the same name exists already and Null will be returned.
+//	Otherwise, a valid non-Null pointer will be returned.
 */
-void HT_add(Hashtable *ht, Symbol *p_symb){
+Symbol *HT_add(Hashtable *ht, Symbol *p_symb){
 	if(p_symb){
 		Symbol *ptr = HT_get(ht, p_symb->name);
 		if(!ptr){
@@ -70,7 +71,9 @@ void HT_add(Hashtable *ht, Symbol *p_symb){
 			}
 			ht->container[key] = p_symb;
 			ht->size++;
+			return p_symb;
 		}
+		return NULL;
 	}
 }
 
@@ -258,28 +261,19 @@ Symbol *ID_init(Symbol *p_symb){
 // Temporary testing function.
 */
 int test(){
-
+	Hashtable *ht = HT_init();
 	Symbol *a = SMB_init("George");
 	a->var_type = 10;
 	
 	Symbol *b = SMB_init("Dimitra");
 	b->var_type = -55;
 	
-	Symbol *c = SMB_init("Vasilis");
-	c->var_type = 123;
+	Symbol *c = SMB_init("George");
+	c->var_type = 3;
 	
-	Symbol *rec;
-	Hashtable *ht = HT_init();
-	Stack *st = ST_init();
-	
-	AST_Node *n0, *n1, *n2;
-	n0 = ASTN_init(1, a, NULL, NULL, NULL, NULL);
-	n1 = ASTN_init(2, b, n0, NULL, n1, NULL);
-	n2 = ASTN_init(5, a, n1, n2, n0, n1);
-
-	SMB_print(a);
-	SMB_print(b);
-	SMB_print(c);
+	printf("TEST>> %p\n", HT_add(ht, a));
+	printf("TEST>> %p\n", HT_add(ht, b));
+	printf("TEST>> %p\n", HT_add(ht, c));
 			
 	return 0;
 }

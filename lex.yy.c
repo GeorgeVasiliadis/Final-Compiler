@@ -469,8 +469,11 @@ char *yytext;
 #include "y.tab.h"
 #include "lexer_utils.h"
 #include "globals.h"
-#line 472 "lex.yy.c"
-#line 473 "lex.yy.c"
+
+int debug = 0;
+
+#line 475 "lex.yy.c"
+#line 476 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -687,11 +690,11 @@ YY_DECL
 		}
 
 	{
-#line 11 "final.flex"
+#line 14 "final.flex"
 
 
 
-#line 694 "lex.yy.c"
+#line 697 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -750,98 +753,98 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 14 "final.flex"
-{printf("Equal Operator\n"); return EQ_OP;}
+#line 17 "final.flex"
+{if(debug)printf("Equal Operator\n"); return EQ_OP;}
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 15 "final.flex"
-{printf("Different Operator\n"); return NE_OP;}
+#line 18 "final.flex"
+{if(debug)printf("Different Operator\n"); return NE_OP;}
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 16 "final.flex"
-{printf("Less Operator\n"); return LT_OP;}
+#line 19 "final.flex"
+{if(debug)printf("Less Operator\n"); return LT_OP;}
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 17 "final.flex"
-{printf("Greater Operator\n"); return GT_OP;}
+#line 20 "final.flex"
+{if(debug)printf("Greater Operator\n"); return GT_OP;}
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 18 "final.flex"
-{printf("Less Equal Operator\n"); return LE_OP;}
+#line 21 "final.flex"
+{if(debug)printf("Less Equal Operator\n"); return LE_OP;}
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 19 "final.flex"
-{printf("Greater Equal Operator\n"); return GE_OP;}
+#line 22 "final.flex"
+{if(debug)printf("Greater Equal Operator\n"); return GE_OP;}
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 21 "final.flex"
-{printf("Assign Operator\n"); return '=';}
+#line 24 "final.flex"
+{if(debug)printf("Assign Operator\n"); return '=';}
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 22 "final.flex"
-{printf("Comma\n"); return ',';}
+#line 25 "final.flex"
+{if(debug)printf("Comma\n"); return ',';}
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 23 "final.flex"
-{printf("Semicolon\n"); return ';';}
+#line 26 "final.flex"
+{if(debug)printf("Semicolon\n"); return ';';}
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 25 "final.flex"
-{printf("Add Operator\n"); return '+';}
+#line 28 "final.flex"
+{if(debug)printf("Add Operator\n"); return '+';}
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 26 "final.flex"
-{printf("Substract Operator\n"); return '-';}
+#line 29 "final.flex"
+{if(debug)printf("Substract Operator\n"); return '-';}
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 27 "final.flex"
-{printf("Multiply Operator\n"); return '*';}
+#line 30 "final.flex"
+{if(debug)printf("Multiply Operator\n"); return '*';}
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 28 "final.flex"
-{printf("Divide\n"); return '/';}
+#line 31 "final.flex"
+{if(debug)printf("Divide\n"); return '/';}
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 30 "final.flex"
-{printf("Left Curly Bracket\n"); return '{';}
+#line 33 "final.flex"
+{if(debug)printf("Left Curly Bracket\n"); return '{';}
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 31 "final.flex"
-{printf("Right Curly Bracket\n"); return '}';}
+#line 34 "final.flex"
+{if(debug)printf("Right Curly Bracket\n"); return '}';}
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 32 "final.flex"
-{printf("Left Parenthesis\n"); return '(';}
+#line 35 "final.flex"
+{if(debug)printf("Left Parenthesis\n"); return '(';}
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 33 "final.flex"
-{printf("Right Parenthesis\n"); return ')';}
+#line 36 "final.flex"
+{if(debug)printf("Right Parenthesis\n"); return ')';}
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 35 "final.flex"
+#line 38 "final.flex"
 {	
 				int t = check_if_reserved(yytext);
 				if(t==ID){
-					printf("ID -> %s\n", yytext);
+					if(debug)printf("ID -> %s\n", yytext);
 				} else {
-					printf("Reserved Word -> %s\n", yytext);
+					if(debug)printf("Reserved Word -> %s\n", yytext);
 				}
 				strcpy(yylval.ystr, yytext);
 				return t;
@@ -849,27 +852,27 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 46 "final.flex"
+#line 49 "final.flex"
 {
-				printf("Integer -> %s\n", yytext);
+				if(debug)printf("Integer -> %s\n", yytext);
 				strcpy (yylval.ystr, yytext);
 				return INT_CONST;
 			}
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 52 "final.flex"
+#line 55 "final.flex"
 {
-				printf("Integer -> %s\n", yytext);
+				if(debug)printf("Integer -> %s\n", yytext);
 				strcpy(yylval.ystr, yytext);
 				return INT_CONST;
 			}
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 58 "final.flex"
+#line 61 "final.flex"
 {
-				printf("Float -> %s\n", yytext);
+				if(debug)printf("Float -> %s\n", yytext);
 				strcpy(yylval.ystr, yytext);
 				return FLOAT_CONST;
 			}
@@ -877,20 +880,20 @@ YY_RULE_SETUP
 case 22:
 /* rule 22 can match eol */
 YY_RULE_SETUP
-#line 64 "final.flex"
+#line 67 "final.flex"
 {/*WhiteSpace*/}
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 66 "final.flex"
+#line 69 "final.flex"
 {/*Unrecognized Character*/}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 68 "final.flex"
+#line 71 "final.flex"
 ECHO;
 	YY_BREAK
-#line 893 "lex.yy.c"
+#line 896 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -1895,5 +1898,5 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 68 "final.flex"
+#line 71 "final.flex"
 
