@@ -886,7 +886,7 @@ YY_RULE_SETUP
 case 23:
 YY_RULE_SETUP
 #line 69 "final.flex"
-{/*Unrecognized Character*/}
+{fprintf(stderr, "Error: Unrecognized character '%c'.\n", yytext[0]); exit(1);}
 	YY_BREAK
 case 24:
 YY_RULE_SETUP

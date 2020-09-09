@@ -66,6 +66,6 @@ int debug = 0;
 			
 [ \t\n]			{/*WhiteSpace*/}
 
-.			{/*Unrecognized Character*/}
+.			{fprintf(stderr, "Error: Unrecognized character '%c'.\n", yytext[0]); exit(1);}
 
 %%
