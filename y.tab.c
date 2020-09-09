@@ -1453,7 +1453,7 @@ yyreduce:
                                                 {
 							smb = ST_pop(st);
 							check_println(smb);
-							(yyval.p_astn) = ASTN_init(ASTN_PRINTLN, smb, NULL, NULL, NULL, NULL);
+							(yyval.p_astn) = ASTN_init(ASTN_PRINTLN, smb, (yyvsp[-2].p_astn), NULL, NULL, NULL);
 						}
 #line 1459 "y.tab.c"
     break;
@@ -1547,7 +1547,7 @@ yyreduce:
                                                 {
 							smb = ST_pop(st);
 							ST_push(st, smb);
-							(yyval.p_astn) = ASTN_init(ASTN_EXPR, smb, NULL, NULL, NULL, NULL);
+							(yyval.p_astn) = ASTN_init(ASTN_EXPR, smb, (yyvsp[0].p_astn), NULL, NULL, NULL);
 						}
 #line 1553 "y.tab.c"
     break;
@@ -1745,7 +1745,7 @@ yyreduce:
 							smb = ST_pop(st);
 							smb = check_add(smb, temp);
 							ST_push(st, smb);
-							(yyval.p_astn) = ASTN_init(ASTN_R_VAL, smb, NULL, NULL, NULL, NULL);
+							(yyval.p_astn) = ASTN_init(ASTN_R_VAL, smb, (yyvsp[-2].p_astn), (yyvsp[0].p_astn), NULL, NULL);
 						
 						}
 #line 1752 "y.tab.c"
@@ -1768,7 +1768,7 @@ yyreduce:
                                                 {
 							smb = ST_pop(st);
 							ST_push(st, smb);
-							(yyval.p_astn) = ASTN_init(ASTN_R_VAL, smb, NULL, NULL, NULL, NULL);	
+							(yyval.p_astn) = ASTN_init(ASTN_R_VAL, smb, (yyvsp[0].p_astn), NULL, NULL, NULL);	
 						}
 #line 1774 "y.tab.c"
     break;
@@ -1803,7 +1803,7 @@ yyreduce:
                                                 {
 							smb = ST_pop(st);
 							ST_push(st, smb);
-							(yyval.p_astn) = ASTN_init(ASTN_TERM, smb, NULL, NULL, NULL, NULL);
+							(yyval.p_astn) = ASTN_init(ASTN_TERM, smb, (yyvsp[0].p_astn), NULL, NULL, NULL);
 						}
 #line 1809 "y.tab.c"
     break;
@@ -1848,7 +1848,7 @@ yyreduce:
                                                 {
 							smb = ST_pop(st);
 							ST_push(st, smb);
-							(yyval.p_astn) = ASTN_init(ASTN_FACTOR, smb, NULL, NULL, NULL, NULL);
+							(yyval.p_astn) = ASTN_init(ASTN_FACTOR, smb, (yyvsp[0].p_astn), NULL, NULL, NULL);
 						}
 #line 1854 "y.tab.c"
     break;

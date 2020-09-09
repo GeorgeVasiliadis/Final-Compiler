@@ -4,7 +4,7 @@
 #include "y.tab.h"
 #include "globals.h"
 #include "structures.h"
-
+#include "code_gen.h"
 
 extern Hashtable *ht;
 extern Stack *st;
@@ -16,55 +16,6 @@ void yyerror(char const *err){
 	exit(1);
 }
  
-void traverse(AST_Node *root){
-	if(root){
-	printf("<------>\n");
-	int var_type;
-	Symbol *smb;
-	AST_Node *temp;
-		switch (root->node_type){
-			case ASTN_PROGRAM:
-				printf("Program: %s\n", root->wrapped_symbol->name);
-				traverse(root->p_nodelist[0]);
-				break;
-
-
-			case ASTN_STMT_LIST:
-				printf("Statement List\n");
-				traverse(root->p_nodelist[0]);
-				traverse(root->p_nodelist[1]);
-				break;
-
-
-			case ASTN_DECLARATION:
-				printf("Declaration:\n");
-				break;
-
-
-			case ASTN_ASSIGN_EXPR:
-				printf("Assign:\n");
-				break;
-
-
-			case ASTN_IF_STMT:
-				printf("If:\n");
-				if(root->wrapped_symbol->value.i){
-					printf("Chose \"IF\" side\n");
-					traverse(root->p_nodelist[0]);
-				} else {
-					printf("Chose \"NOT-IF\" side\n");
-					traverse(root->p_nodelist[1]);
-				}
-				break;
-
-
-			case ASTN_PRINTLN:
-				printf("Print Line:\n");
-				break;
-		}
-	}
-
-}
 
 int main(){
 	ht = HT_init();
@@ -72,7 +23,7 @@ int main(){
 	
 	if(!yyparse()){
 		printf("Yacc >> Accepted\n");
-		traverse(root);
+		generate_code(root);
 	}
 	printf("\n");
 	return 0;

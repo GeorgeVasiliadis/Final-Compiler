@@ -1,16 +1,8 @@
 mainclass Test {
 	public static void main ( )
 	{
-		int a, b, c;
-		println(a);
-		println(a+b);
-		c = -(a+b);
-		println(c);
-		if(11==11.1){
-			println(-c/2);
-		}
-		while (a < 2){
-			println(2);
-		}
+		println(2);	
+		println(4);
+		println(3.3);
 	}
 }
