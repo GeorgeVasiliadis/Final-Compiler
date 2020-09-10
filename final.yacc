@@ -50,7 +50,7 @@ program			:	MAINCLASS ID '{' PUBLIC STATIC VOID MAIN '(' ')' comp_stmt '}'
 							
 comp_stmt		:	'{' stmt_list '}'
 						{
-							$$ = $2;
+							$$ = ASTN_init(ASTN_COMP_STMT, NULL, $2, NULL, NULL, NULL);
 						}
 			;
 							
@@ -60,67 +60,67 @@ stmt_list		:	stmt_list stmt
 						}
 			|	/* EMPTY */	
 						{
-							$$ = ASTN_init(ASTN_STMT_LIST, NULL, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_STMT_LIST_EMPTY, NULL, NULL, NULL, NULL, NULL);
 						}	
 			;
 					
 stmt			:	open_stmt
 						{
-							$$ = $1;
+							$$ = ASTN_init(ASTN_STMT_OPEN, NULL, $1, NULL, NULL, NULL);
 						}
 			|	closed_stmt
 						{
-							$$ = $1;
+							$$ = ASTN_init(ASTN_STMT_CLOSED, NULL, $1, NULL, NULL, NULL);
 						}
 			;
 
 open_stmt		:	open_for_stmt
 						{
-							$$ = ASTN_init(ASTN_STMT, NULL, $1, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_OPEN_STMT_FOR, NULL, $1, NULL, NULL, NULL);
 						}
 			|	open_while_stmt
 						{
-							$$ = ASTN_init(ASTN_STMT, NULL, $1, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_OPEN_STMT_WHILE, NULL, $1, NULL, NULL, NULL);
 						}
 			|	open_if_stmt
 						{
-							$$ = ASTN_init(ASTN_STMT, NULL, $1, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_OPEN_STMT_IF, NULL, $1, NULL, NULL, NULL);
 						}
 			;
 
 closed_stmt		:	closed_for_stmt
 						{
-							$$ = ASTN_init(ASTN_STMT, NULL, $1, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_CLOSED_STMT_FOR, NULL, $1, NULL, NULL, NULL);
 						}
 			|	closed_while_stmt
 						{
-							$$ = ASTN_init(ASTN_STMT, NULL, $1, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_CLOSED_STMT_WHILE, NULL, $1, NULL, NULL, NULL);
 						}
 			|	closed_if_stmt
 						{
-							$$ = ASTN_init(ASTN_STMT, NULL, $1, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_CLOSED_STMT_IF, NULL, $1, NULL, NULL, NULL);
 						}
 			|	simple_stmt
 						{
-							$$ = $1;
+							$$ = ASTN_init(ASTN_CLOSED_STMT_SIMPLE, NULL, $1, NULL, NULL, NULL);
 						}
 			;
 	
 simple_stmt		:	assign_stmt
 						{
-							$$ = ASTN_init(ASTN_STMT, NULL, $1, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_SIMPLE_STMT_ASSIGN, NULL, $1, NULL, NULL, NULL);
 						}
 			|	comp_stmt
 						{
-							$$ = ASTN_init(ASTN_STMT, NULL, $1, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_SIMPLE_STMT_COMP, NULL, $1, NULL, NULL, NULL);
 						}
 			|	declaration
 						{
-							$$ = ASTN_init(ASTN_STMT, NULL, $1, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_SIMPLE_STMT_DECLARATION, NULL, $1, NULL, NULL, NULL);
 						}
 			|	null_stmt
 						{
-							$$ = ASTN_init(ASTN_STMT, NULL, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_SIMPLE_STMT_NULL, NULL, NULL, NULL, NULL, NULL);
 						}
 
 			|	println_stmt
@@ -134,7 +134,7 @@ println_stmt		:	PRINTLN '(' expr ')' ';'
 						{
 							smb = ST_pop(st);
 							check_println(smb);
-							$$ = ASTN_init(ASTN_STMT_PRINTLN, smb, $3, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_PRINTLN_STMT, smb, $3, NULL, NULL, NULL);
 						}
 			;
 						
@@ -150,7 +150,7 @@ type			:	INT
 						{
 							smb = SMB_init("");
 							smb->var_type = TYPE_INT;
-							$$ = ASTN_init(ASTN_TYPE, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_TYPE_INT, smb, NULL, NULL, NULL, NULL);
 						}
 			|
 				FLOAT
@@ -158,7 +158,7 @@ type			:	INT
 							
 							smb = SMB_init("");
 							smb->var_type = TYPE_FLOAT;
-							$$ = ASTN_init(ASTN_TYPE, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_TYPE_FLOAT, smb, NULL, NULL, NULL, NULL);
 						}
 			;
 
@@ -169,7 +169,7 @@ id_list			:	ID ',' id_list
 								fprintf(stderr, "Error: Tried to declare ID multiple times.\n");
 								exit(1);
 							}
-							$$ = ASTN_init(ASTN_ID_LIST, smb, $3, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_ID_LIST_MORE, smb, $3, NULL, NULL, NULL);
 						}
 			|	ID
 						{
@@ -178,7 +178,7 @@ id_list			:	ID ',' id_list
 								fprintf(stderr, "Error: Tried to declare ID multiple times.\n");
 								exit(1);
 							}
-							$$ = ASTN_init(ASTN_ID_LIST, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_ID_LIST_ONE, smb, NULL, NULL, NULL, NULL);
 						}
 			;
 
@@ -199,7 +199,7 @@ expr
 			:	assign_expr	{
 							smb = ST_pop(st);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_EXPR, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_EXPR_ASSIGN_EXPR, smb, NULL, NULL, NULL, NULL);
 						}
 			|	r_val		
 						{
@@ -217,7 +217,7 @@ opassign_expr		:	assign_expr
 						}
 			|	/* EMPTY */
 						{
-							$$ = ASTN_init(ASTN_OPASSIGN_EXPR, NULL, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_OPASSIGN_EXPR_EMPTY, NULL, NULL, NULL, NULL, NULL);
 						}	
 			;
 	
@@ -230,25 +230,7 @@ assign_expr		:	ID '=' expr
 							$$ = ASTN_init(ASTN_ASSIGN_EXPR, smb, NULL, NULL, NULL, NULL);							
 						}
 			;
-							
-							
-open_for_stmt		:	FOR '(' opassign_expr ';' opbool_expr ';' opassign_expr ')' open_stmt
-						{
-							ST_pop(st);
-							smb = ST_pop(st);
-							ST_pop(st);
-							$$ = ASTN_init(ASTN_FOR_STMT, smb, $3, $7, NULL, NULL);
-						}
-			;
 
-closed_for_stmt		:	FOR '(' opassign_expr ';' opbool_expr ';' opassign_expr ')' closed_stmt
-						{
-							ST_pop(st);
-							smb = ST_pop(st);
-							ST_pop(st);
-							$$ = ASTN_init(ASTN_FOR_STMT, smb, $3, $7, NULL, NULL); 						
-						}
-			;
 
 						
 opbool_expr		:	bool_expr
@@ -258,40 +240,59 @@ opbool_expr		:	bool_expr
 						}
 			|	/* EMPTY */
 						{
-							$$ = ASTN_init(ASTN_OPBOOL_EXPR, NULL, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_OPBOOL_EXPR_EMPTY, NULL, NULL, NULL, NULL, NULL);
+						}
+			;
+							
+							
+open_for_stmt		:	FOR '(' opassign_expr ';' opbool_expr ';' opassign_expr ')' open_stmt
+						{
+							ST_pop(st);
+							smb = ST_pop(st);
+							ST_pop(st);
+							$$ = ASTN_init(ASTN_OPEN_FOR_STMT, smb, $3, $7, NULL, NULL);
+						}
+			;
+
+closed_for_stmt		:	FOR '(' opassign_expr ';' opbool_expr ';' opassign_expr ')' closed_stmt
+						{
+							ST_pop(st);
+							smb = ST_pop(st);
+							ST_pop(st);
+							$$ = ASTN_init(ASTN_CLOSED_FOR_STMT, smb, $3, $7, NULL, NULL); 						
 						}
 			;
 							
 open_while_stmt		:	WHILE '(' bool_expr ')' open_stmt
 						{
 							smb = ST_pop(st);
-							$$ = ASTN_init(ASTN_WHILE_STMT, smb, $5, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_OPEN_WHILE_STMT, smb, $5, NULL, NULL, NULL);
 						}
 			;
 
 closed_while_stmt	:	WHILE '(' bool_expr ')' closed_stmt
 						{
 							smb = ST_pop(st);
-							$$ = ASTN_init(ASTN_WHILE_STMT, smb, $5, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_CLOSED_WHILE_STMT, smb, $5, NULL, NULL, NULL);
 						}
 			;
 
 open_if_stmt		:	IF '(' bool_expr ')' stmt
 						{
 							smb = ST_pop(st);
-							$$ = ASTN_init(ASTN_IF_STMT, smb, $5, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_OPEN_IF_STMT, smb, $5, NULL, NULL, NULL);
 						}
 			|	IF '(' bool_expr ')' closed_stmt ELSE open_stmt
 						{
 							smb = ST_pop(st);
-							$$ = ASTN_init(ASTN_IF_STMT, smb, $5, $7, NULL, NULL);
+							$$ = ASTN_init(ASTN_OPEN_IF_ELSE_STMT, smb, $5, $7, NULL, NULL);
 						}
 			;
 
 closed_if_stmt		:	IF '(' bool_expr ')' closed_stmt ELSE closed_stmt
 						{
 							smb = ST_pop(st);
-							$$ = ASTN_init(ASTN_IF_STMT, smb, $5, $7, NULL, NULL);
+							$$ = ASTN_init(ASTN_CLOSED_IF_STMT, smb, $5, $7, NULL, NULL);
 						}
 			;
 							
@@ -301,7 +302,7 @@ bool_expr		:	expr EQ_OP expr
 							smb = ST_pop(st);
 							smb = check_eq(smb, temp);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_BOOL_EXPR, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_BOOL_EXPR_EQ, smb, NULL, NULL, NULL, NULL);
 						}
 			|	expr LT_OP expr
 						{
@@ -309,7 +310,7 @@ bool_expr		:	expr EQ_OP expr
 							smb = ST_pop(st);
 							smb = check_lt(smb, temp);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_BOOL_EXPR, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_BOOL_EXPR_LT, smb, NULL, NULL, NULL, NULL);
 						}
 			|	expr GT_OP expr
 						{
@@ -317,7 +318,7 @@ bool_expr		:	expr EQ_OP expr
 							smb = ST_pop(st);
 							smb = check_gt(smb, temp);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_BOOL_EXPR, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_BOOL_EXPR_GT, smb, NULL, NULL, NULL, NULL);
 						}
 			|	expr LE_OP expr
 						{
@@ -325,7 +326,7 @@ bool_expr		:	expr EQ_OP expr
 							smb = ST_pop(st);
 							smb = check_le(smb, temp);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_BOOL_EXPR, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_BOOL_EXPR_LE, smb, NULL, NULL, NULL, NULL);
 						}
 			|	expr GE_OP expr
 						{
@@ -333,7 +334,7 @@ bool_expr		:	expr EQ_OP expr
 							smb = ST_pop(st);
 							smb = check_ge(smb, temp);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_BOOL_EXPR, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_BOOL_EXPR_GE, smb, NULL, NULL, NULL, NULL);
 						}
 			|	expr NE_OP expr
 						{
@@ -341,7 +342,7 @@ bool_expr		:	expr EQ_OP expr
 							smb = ST_pop(st);
 							smb = check_ne(smb, temp);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_BOOL_EXPR, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_BOOL_EXPR_NE, smb, NULL, NULL, NULL, NULL);
 						}
 			;
 
@@ -351,7 +352,7 @@ r_val			:	r_val '+' term
 							smb = ST_pop(st);
 							smb = check_add(smb, temp);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_R_VAL, smb, $1, $3, NULL, NULL);
+							$$ = ASTN_init(ASTN_R_VAL_ADD, smb, $1, $3, NULL, NULL);
 						
 						}
 			|	r_val '-' term
@@ -360,7 +361,7 @@ r_val			:	r_val '+' term
 							smb = ST_pop(st);
 							smb = check_substr(smb, temp);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_R_VAL, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_R_VAL_SUBSTR, smb, NULL, NULL, NULL, NULL);
 						}
 			|	term
 						{
@@ -376,7 +377,7 @@ term			:	term '*' factor
 							smb = ST_pop(st);
 							smb = check_mult(smb, temp);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_TERM, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_TERM_MULT, smb, NULL, NULL, NULL, NULL);
 							
 						}
 			|	term '/' factor
@@ -385,7 +386,7 @@ term			:	term '*' factor
 							smb = ST_pop(st);
 							smb = check_division(smb, temp);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_TERM, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_TERM_DIVISION, smb, NULL, NULL, NULL, NULL);
 						}
 			|	factor
 						{
@@ -399,14 +400,14 @@ factor			:	'(' expr ')'
 						{
 							smb = ST_pop(st);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_FACTOR, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_FACTOR_PARENTH, smb, NULL, NULL, NULL, NULL);
 						}
 			|	'-' factor
 						{
 							smb = ST_pop(st);
 							smb = check_uminus(smb);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_TERM, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_FACTOR_UMINUS, smb, NULL, NULL, NULL, NULL);
 						}
 			|	ID
 						{
@@ -416,7 +417,7 @@ factor			:	'(' expr ')'
 								exit(1);
 							}
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_FACTOR, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_FACTOR_ID, smb, NULL, NULL, NULL, NULL);
 						}
 			|	num
 						{
@@ -432,7 +433,7 @@ num			:	INT_CONST
 							smb->var_type = TYPE_INT;
 							smb->value.i = atoi($1);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_NUM, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_NUM_INT, smb, NULL, NULL, NULL, NULL);
 						}
 			|	FLOAT_CONST	
 						{
@@ -440,7 +441,7 @@ num			:	INT_CONST
 							smb->var_type = TYPE_FLOAT;
 							smb->value.f = atof($1);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_NUM, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_NUM_FLOAT, smb, NULL, NULL, NULL, NULL);
 						}
 			;			
 							
