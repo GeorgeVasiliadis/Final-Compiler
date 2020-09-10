@@ -47,6 +47,12 @@
 #define ASTN_NUM 37
 #define ASTN_ID 38
 #define ASTN_PRINTLN 39
+#define ASTN_FACTOR_NUM 40
+#define ASTN_TERM_FACTOR 41
+#define ASTN_R_VAL_TERM 42
+#define ASTN_EXPR_R_VAL 43
+#define ASTN_STMT_PRINTLN 44
+#define ASTN_SIMPLE_STMT_PRINTLN 45
 
 
 #define TYPE_INT 0

@@ -7,3 +7,5 @@ eite - 5 < (-3 < -2) --> 1
 println(-2.4/-1.235 <= 0);
 
 3)error system. what is printed, where it is printed, how it is printed.
+
+4) !! manual memory leakage test !!

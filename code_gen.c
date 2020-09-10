@@ -37,7 +37,6 @@ void declare_float_constants(AST_Node *root){
 
 void traverse(AST_Node *root){
 	if(root){
-	printf("<------>\n");
 	AST_Node *temp;
 		switch (root->node_type){
 			case ASTN_PROGRAM:
@@ -92,22 +91,27 @@ void traverse(AST_Node *root){
 					printf("Chose \"NOT-IF\" side\n");
 					traverse(root->p_nodelist[1]);
 				}
+			
+				break;
+			case ASTN_SIMPLE_STMT_PRINTLN:
+				traverse(root->p_nodelist[0]);
 				break;
 
-
-			case ASTN_PRINTLN:
+			case ASTN_STMT_PRINTLN:
 				fputs("#Print\n", fp);
+
+				traverse(root->p_nodelist[0]);
+
 				smb = root->wrapped_symbol;
-				var_type = smb->var_type;				
+				var_type = smb->var_type;
 				if(var_type == TYPE_INT){
 					fputs("li $v0, 1\n", fp);
-					fputs("lw $a0, ", fp);
+					fputs("move $a0, $t0", fp);
 				} else if (var_type == TYPE_FLOAT){
 					fputs("li $v0, 2\n", fp);
-					fputs("l.s $f12, ", fp);
+					fputs("mov.s $f12, $f0", fp);
 				}
-				traverse(root->p_nodelist[0]);
-				fputs("\n", fp);
+				fputc('\n', fp);
 				fputs("syscall\n", fp);
 				make_room();
 
@@ -119,23 +123,55 @@ void traverse(AST_Node *root){
 				make_room();
 				break;
 				
-			case ASTN_EXPR:
+			case ASTN_EXPR_R_VAL:
+				smb = root->wrapped_symbol;
+				var_type = smb->var_type;
+				if(var_type == TYPE_INT){
+					// no need --->  fputs("move $t0, $t0", fp);
+				} else if (var_type == TYPE_FLOAT){
+					// no need ---> fputs("mov.s %f0, $f0", fp);
+				}
 				traverse(root->p_nodelist[0]);
+				//fputc('\n', fp);
 				break;
 				
 				
-			case ASTN_R_VAL:
+			case ASTN_R_VAL_TERM:
+				smb = root->wrapped_symbol;
+				var_type = smb->var_type;
+				if(var_type == TYPE_INT){
+					// no need --->  fputs("move $t0, $t0", fp);
+				} else if (var_type == TYPE_FLOAT){
+					// no need ---> fputs("mov.s %f0, $f0", fp);
+				}
 				traverse(root->p_nodelist[0]);
+				//fputc('\n', fp);
 				break;
 			
 			
-			case ASTN_TERM:
+			case ASTN_TERM_FACTOR:
+				smb = root->wrapped_symbol;
+				var_type = smb->var_type;
+				if(var_type == TYPE_INT){
+					// no need --->  fputs("move $t0, $t0", fp);
+				} else if (var_type == TYPE_FLOAT){
+					// no need ---> fputs("mov.s %f0, $f0", fp);
+				}
 				traverse(root->p_nodelist[0]);
+				//fputc('\n', fp);
 				break;
 				
 				
-			case ASTN_FACTOR:
+			case ASTN_FACTOR_NUM:
+				smb = root->wrapped_symbol;
+				var_type = smb->var_type;
+				if(var_type == TYPE_INT){
+					fputs("lw $t0, ", fp);
+				} else if (var_type == TYPE_FLOAT){
+					fputs("l.s $f0, ", fp);
+				}
 				traverse(root->p_nodelist[0]);
+				fputc('\n', fp);
 				break;
 				
 

@@ -1,16 +1,17 @@
 #Declarations
 .data
 $t_2: .word 2
-$t_4: .word 4
-$t_3.3: .float 3.300000
+$t_3.5: .float 3.500000
+$t_4.4: .float 4.400000
 
 
 
 #Actual Instructions
 .text
 #Print
+lw $t0, $t_2
 li $v0, 1
-lw $a0, $t_2
+move $a0, $t0
 syscall
 
 
@@ -23,22 +24,9 @@ syscall
 
 
 #Print
-li $v0, 1
-lw $a0, $t_4
-syscall
-
-
-
-#Print newline
-li $v0, 11
-li $a0, 10
-syscall
-
-
-
-#Print
+l.s $f0, $t_3.5
 li $v0, 2
-l.s $f12, $t_3.3
+mov.s $f12, $f0
 syscall
 
 
@@ -51,8 +39,9 @@ syscall
 
 
 #Print
-li $v0, 1
-lw $a0, $t_2
+l.s $f0, $t_4.4
+li $v0, 2
+mov.s $f12, $f0
 syscall
 
 

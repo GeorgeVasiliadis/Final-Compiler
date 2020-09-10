@@ -125,7 +125,7 @@ simple_stmt		:	assign_stmt
 
 			|	println_stmt
 						{
-							$$ = ASTN_init(ASTN_STMT, NULL, $1, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_SIMPLE_STMT_PRINTLN, NULL, $1, NULL, NULL, NULL);
 						}
 			;
 			
@@ -134,7 +134,7 @@ println_stmt		:	PRINTLN '(' expr ')' ';'
 						{
 							smb = ST_pop(st);
 							check_println(smb);
-							$$ = ASTN_init(ASTN_PRINTLN, smb, $3, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_STMT_PRINTLN, smb, $3, NULL, NULL, NULL);
 						}
 			;
 						
@@ -205,7 +205,7 @@ expr
 						{
 							smb = ST_pop(st);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_EXPR, smb, $1, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_EXPR_R_VAL, smb, $1, NULL, NULL, NULL);
 						}
 			;	
 
@@ -366,7 +366,7 @@ r_val			:	r_val '+' term
 						{
 							smb = ST_pop(st);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_R_VAL, smb, $1, NULL, NULL, NULL);	
+							$$ = ASTN_init(ASTN_R_VAL_TERM, smb, $1, NULL, NULL, NULL);	
 						}
 			;
 					
@@ -391,7 +391,7 @@ term			:	term '*' factor
 						{
 							smb = ST_pop(st);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_TERM, smb, $1, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_TERM_FACTOR, smb, $1, NULL, NULL, NULL);
 						}
 			;
 				
@@ -422,7 +422,7 @@ factor			:	'(' expr ')'
 						{
 							smb = ST_pop(st);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_FACTOR, smb, $1, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_FACTOR_NUM, smb, $1, NULL, NULL, NULL);
 						}
 			;
 

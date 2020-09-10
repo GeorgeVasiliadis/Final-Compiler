@@ -1,8 +1,8 @@
 mainclass Test {
 	public static void main ( )
 	{
-		println(2);	
-		println(4);
-		println(3.3);
+		println(2);
+		println(3.5);
+		println(4.4);
 	}
 }
