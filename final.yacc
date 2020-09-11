@@ -199,7 +199,7 @@ expr
 			:	assign_expr	{
 							smb = ST_pop(st);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_EXPR_ASSIGN_EXPR, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_EXPR_ASSIGN_EXPR, smb, $1, NULL, NULL, NULL);
 						}
 			|	r_val		
 						{
@@ -400,14 +400,14 @@ factor			:	'(' expr ')'
 						{
 							smb = ST_pop(st);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_FACTOR_PARENTH, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_FACTOR_PARENTH, smb, $2, NULL, NULL, NULL);
 						}
 			|	'-' factor
 						{
 							smb = ST_pop(st);
 							smb = check_uminus(smb);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_FACTOR_UMINUS, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_FACTOR_UMINUS, smb, $2, NULL, NULL, NULL);
 						}
 			|	ID
 						{

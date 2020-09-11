@@ -1537,7 +1537,7 @@ yyreduce:
                                                 {
 							smb = ST_pop(st);
 							ST_push(st, smb);
-							(yyval.p_astn) = ASTN_init(ASTN_EXPR_ASSIGN_EXPR, smb, NULL, NULL, NULL, NULL);
+							(yyval.p_astn) = ASTN_init(ASTN_EXPR_ASSIGN_EXPR, smb, (yyvsp[0].p_astn), NULL, NULL, NULL);
 						}
 #line 1543 "y.tab.c"
     break;
@@ -1813,7 +1813,7 @@ yyreduce:
                                                 {
 							smb = ST_pop(st);
 							ST_push(st, smb);
-							(yyval.p_astn) = ASTN_init(ASTN_FACTOR_PARENTH, smb, NULL, NULL, NULL, NULL);
+							(yyval.p_astn) = ASTN_init(ASTN_FACTOR_PARENTH, smb, (yyvsp[-1].p_astn), NULL, NULL, NULL);
 						}
 #line 1819 "y.tab.c"
     break;
@@ -1824,7 +1824,7 @@ yyreduce:
 							smb = ST_pop(st);
 							smb = check_uminus(smb);
 							ST_push(st, smb);
-							(yyval.p_astn) = ASTN_init(ASTN_FACTOR_UMINUS, smb, NULL, NULL, NULL, NULL);
+							(yyval.p_astn) = ASTN_init(ASTN_FACTOR_UMINUS, smb, (yyvsp[0].p_astn), NULL, NULL, NULL);
 						}
 #line 1830 "y.tab.c"
     break;

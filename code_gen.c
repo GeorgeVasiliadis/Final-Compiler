@@ -144,6 +144,11 @@ void traverse(AST_Node *root){
 			case ASTN_ASSIGN_STMT:
 				traverse(root->p_nodelist[0]);
 				break;
+				
+				
+			case ASTN_EXPR_ASSIGN_EXPR:
+				traverse(root->p_nodelist[0]);
+				break;
 	
 			case ASTN_ASSIGN_EXPR:
 				fputs("#Assign\n", fp);
@@ -151,9 +156,9 @@ void traverse(AST_Node *root){
 				smb = root->wrapped_symbol;
 				var_type = smb->var_type;
 				if(var_type == TYPE_INT){
-					fprintf(fp, "sw $t7, $var_%s\n", smb->name);
+					fprintf(fp, "sw $t6, $var_%s\n", smb->name);
 				} else if (var_type == TYPE_FLOAT){
-					fprintf(fp, "s.s $f7, $var_%s\n", smb->name);
+					fprintf(fp, "s.s $f6, $var_%s\n", smb->name);
 				}
 				make_room();
 				break;
@@ -165,10 +170,10 @@ void traverse(AST_Node *root){
 				var_type = smb->var_type;
 				if(var_type == TYPE_INT){
 					fputs("li $v0, 1\n", fp);
-					fputs("move $a0, $t7", fp);
+					fputs("move $a0, $t6", fp);
 				} else if (var_type == TYPE_FLOAT){
 					fputs("li $v0, 2\n", fp);
-					fputs("mov.s $f12, $f7", fp);
+					fputs("mov.s $f12, $f6", fp);
 				}
 				fputc('\n', fp);
 				fputs("syscall\n", fp);
@@ -183,8 +188,15 @@ void traverse(AST_Node *root){
 	
 	
 
-			case ASTN_EXPR_R_VAL:	//7//
+			case ASTN_EXPR_R_VAL:
 				traverse(root->p_nodelist[0]);
+				smb = root->wrapped_symbol;
+				var_type = smb->var_type;
+				if(var_type == TYPE_INT){
+					fputs("move $t6, $t7\n", fp);
+				} else if (var_type == TYPE_FLOAT){
+					fputs("mov.s $f6, $f7\n", fp);
+				}
 				break;
 	
 	
@@ -363,7 +375,6 @@ void traverse(AST_Node *root){
 	
 			case ASTN_TERM_FACTOR:
 				traverse(root->p_nodelist[0]);
-	
 				smb = root->wrapped_symbol;
 				var_type = smb->var_type;
 				if(var_type == TYPE_INT){
@@ -374,7 +385,32 @@ void traverse(AST_Node *root){
 				fputc('\n', fp);
 	
 				break;
-				
+
+
+			case ASTN_FACTOR_PARENTH:
+				traverse(root->p_nodelist[0]);
+				smb = root->wrapped_symbol;
+				var_type = smb->var_type;
+				if(var_type == TYPE_INT){
+					fputs("move $t9, $t6\n", fp);
+				} else if (var_type == TYPE_FLOAT){
+					fputs("mov.s $f9, $f6\n", fp);
+				}
+				fputc('\n', fp);
+				break;	
+
+
+			case ASTN_FACTOR_UMINUS:
+				traverse(root->p_nodelist[0]);
+				smb = root->wrapped_symbol;
+				var_type = smb->var_type;
+				if(var_type == TYPE_INT){
+					fputs("neg $t9, $t9\n", fp);
+				} else if (var_type == TYPE_FLOAT){
+					fputs("neg.s $f9, $f9\n", fp);
+				}
+				fputc('\n', fp);
+				break;				
 			
 			
 			case ASTN_FACTOR_ID:

@@ -1,9 +1,10 @@
 mainclass Test {
 	public static void main ( )
 	{	
-		int george;
-		float dimitra;
-		george = 3;
-		println(george / dimitra+ 0.33);
+		int a, b, c;
+		a = b = c = 5;
+		println(a);
+		println(b);
+		println(c);
 	}
 }
