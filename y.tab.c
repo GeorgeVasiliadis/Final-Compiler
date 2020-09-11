@@ -1758,7 +1758,7 @@ yyreduce:
 							smb = ST_pop(st);
 							smb = check_substr(smb, temp);
 							ST_push(st, smb);
-							(yyval.p_astn) = ASTN_init(ASTN_R_VAL_SUBSTR, smb, NULL, NULL, NULL, NULL);
+							(yyval.p_astn) = ASTN_init(ASTN_R_VAL_SUBSTR, smb, (yyvsp[-2].p_astn), (yyvsp[0].p_astn), NULL, NULL);
 						}
 #line 1764 "y.tab.c"
     break;

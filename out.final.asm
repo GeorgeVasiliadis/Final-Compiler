@@ -1,9 +1,8 @@
 #Declarations
 .data
-$t_1: .word 1
-$t_2: .word 2
-$t_1.5: .float 1.500000
-$t_2.5: .float 2.500000
+$t_5: .word 5
+$t_3.5: .float 3.500000
+$t_0.4: .float 0.400000
 
 
 
@@ -12,76 +11,27 @@ $t_2.5: .float 2.500000
 
 
 #Print
-lw $t0, $t_1
+lw $t0, $t_5
 move $t1, $t0
-lw $t0, $t_2
-move $t0, $t0
-add $t0, $t0, $t1
-li $v0, 1
-move $a0, $t0
-syscall
+lw $t0, $t_5
 
-
-
-#Print newline
-li $v0, 11
-li $a0, 10
-syscall
-
-
-
-#Print
-l.s $f0, $t_1.5
-mov.s $f1, $f0
-lw $t0, $t_2
-move $t0, $t0
-mtc1 $t0, $f0
-cvt.s.w $f0, $f0
-add.s $f0, $f0, $f1
-
-li $v0, 2
-mov.s $f12, $f0
-syscall
-
-
-
-#Print newline
-li $v0, 11
-li $a0, 10
-syscall
-
-
-
-#Print
-lw $t0, $t_1
+add $t0, $t1, $t0
 move $t1, $t0
-l.s $f0, $t_2.5
+lw $t0, $t_5
+
+add $t0, $t1, $t0
+move $t1, $t0
+l.s $f0, $t_3.5
+
+mtc1 $t1, $f1
+cvt.s.w $f1, $f1
+add.s $f0, $f1, $f0
+
 mov.s $f1, $f0
+l.s $f0, $t_0.4
+mov.s $f0, $f0
 
-mtc1 $t1, $f0
-cvt.s.w $f0, $f0
-add.s $f0, $f0, $f1
-
-li $v0, 2
-mov.s $f12, $f0
-syscall
-
-
-
-#Print newline
-li $v0, 11
-li $a0, 10
-syscall
-
-
-
-#Print
-l.s $f0, $t_1.5
-mov.s $f1, $f0
-l.s $f0, $t_2.5
-mov.s $f1, $f0
-
-add.s $f0, $f0, $f1
+sub.s $f0, $f1, $f0
 
 li $v0, 2
 mov.s $f12, $f0

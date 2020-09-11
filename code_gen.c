@@ -4,10 +4,6 @@
 #include <stdio.h>
 
 Hashtable *constants;
-static Symbol *smb, *smb1, *smb2;
-
-int var_type, var_type1, var_type2;
-
 FILE *fp;
 
 
@@ -19,6 +15,8 @@ void make_room(void){
 
 void declare_constants(AST_Node *root){
 	if(root){
+	Symbol *smb;
+	int var_type;
 		switch(root->node_type){
 			case ASTN_NUM_INT:
 			case ASTN_NUM_FLOAT:
@@ -41,6 +39,11 @@ void declare_constants(AST_Node *root){
 
 void traverse(AST_Node *root){
 	if(root){
+	Symbol *smb;
+	Symbol *smb1;
+	Symbol *smb2;
+	int var_type, var_type1, var_type2;
+	
 	AST_Node *temp;
 		switch (root->node_type){
 			case ASTN_PROGRAM:
@@ -119,10 +122,9 @@ void traverse(AST_Node *root){
 			case ASTN_EXPR_R_VAL:
 				traverse(root->p_nodelist[0]);
 				break;
-				
-				
-				
-			case ASTN_R_VAL_ADD:
+
+
+			case ASTN_R_VAL_SUBSTR:
 				smb = root->wrapped_symbol;
 				smb1 = root->p_nodelist[0]->wrapped_symbol;
 				smb2 = root->p_nodelist[1]->wrapped_symbol;
@@ -140,24 +142,69 @@ void traverse(AST_Node *root){
 				if(var_type2 == TYPE_INT){
 					fputs("move $t0, $t0", fp);
 				} else if (var_type2 == TYPE_FLOAT){
-					fputs("mov.s $f1, $f0\n", fp);
+					fputs("mov.s $f0, $f0\n", fp);
 				}
 				fputc('\n', fp);
 				if(var_type1 == TYPE_INT){
 					if(var_type2 == TYPE_INT){
-						fputs("add $t0, $t0, $t1", fp);
+						fputs("sub $t0, $t1, $t0", fp);
 					} else if(var_type2 == TYPE_FLOAT){
-						fputs("mtc1 $t1, $f0\n", fp);
-						fputs("cvt.s.w $f0, $f0\n", fp);
-						fputs("add.s $f0, $f0, $f1\n", fp);
+						fputs("mtc1 $t1, $f1\n", fp);
+						fputs("cvt.s.w $f1, $f1\n", fp);
+						fputs("sub.s $f0, $f1, $f0\n", fp);
 					}
 				} else if(var_type1 == TYPE_FLOAT){
 					if(var_type2 == TYPE_INT){
 						fputs("mtc1 $t0, $f0\n", fp);
 						fputs("cvt.s.w $f0, $f0\n", fp);
-						fputs("add.s $f0, $f0, $f1\n", fp);
+						fputs("sub.s $f0, $f1, $f0\n", fp);
 					} else if(var_type2 == TYPE_FLOAT){
-						fputs("add.s $f0, $f0, $f1\n", fp);
+						fputs("sub.s $f0, $f1, $f0\n", fp);
+					}
+				}
+				fputc('\n', fp);
+				break;
+
+
+
+			case ASTN_R_VAL_ADD:
+				smb = root->wrapped_symbol;
+				smb1 = root->p_nodelist[0]->wrapped_symbol;
+				smb2 = root->p_nodelist[1]->wrapped_symbol;
+				var_type = smb->var_type;
+				var_type1 = smb1->var_type;
+				var_type2 = smb2->var_type;
+				traverse(root->p_nodelist[0]);
+				if(var_type1 == TYPE_INT){
+					fputs("move $t1, $t0", fp);
+				} else if (var_type1 == TYPE_FLOAT){
+					fputs("mov.s $f1, $f0", fp);
+				}
+				fputc('\n', fp);
+				traverse(root->p_nodelist[1]);
+/*
+				if(var_type2 == TYPE_INT){
+					fputs("move $t0, $t0", fp);
+				} else if (var_type2 == TYPE_FLOAT){
+					fputs("mov.s $f0, $f0\n", fp);
+				}
+*/
+				fputc('\n', fp);
+				if(var_type1 == TYPE_INT){
+					if(var_type2 == TYPE_INT){
+						fputs("add $t0, $t1, $t0", fp);
+					} else if(var_type2 == TYPE_FLOAT){
+						fputs("mtc1 $t1, $f1\n", fp);
+						fputs("cvt.s.w $f1, $f1\n", fp);
+						fputs("add.s $f0, $f1, $f0\n", fp);
+					}
+				} else if(var_type1 == TYPE_FLOAT){
+					if(var_type2 == TYPE_INT){
+						fputs("mtc1 $t0, $f0\n", fp);
+						fputs("cvt.s.w $f0, $f0\n", fp);
+						fputs("add.s $f0, $f1, $f0\n", fp);
+					} else if(var_type2 == TYPE_FLOAT){
+						fputs("add.s $f0, $f1, $f0\n", fp);
 					}
 				}
 				fputc('\n', fp);
