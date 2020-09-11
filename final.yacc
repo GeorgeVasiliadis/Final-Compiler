@@ -110,9 +110,10 @@ simple_stmt		:	assign_stmt
 						{
 							$$ = ASTN_init(ASTN_SIMPLE_STMT_ASSIGN, NULL, $1, NULL, NULL, NULL);
 						}
-			|	comp_stmt
+			
+			|	 comp_stmt
 						{
-							$$ = ASTN_init(ASTN_SIMPLE_STMT_COMP, NULL, $1, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_COMP_STMT, NULL, $1, NULL, NULL, NULL);
 						}
 			|	declaration
 						{
@@ -278,7 +279,7 @@ closed_while_stmt	:	WHILE '(' bool_expr ')' closed_stmt
 						}
 			;
 
-open_if_stmt		:	IF '(' bool_expr ')' comp_stmt
+open_if_stmt		:	IF '(' bool_expr ')' stmt
 						{
 							smb = ST_pop(st);
 							$$ = ASTN_init(ASTN_OPEN_IF_STMT, smb, $3, $5, NULL, NULL);

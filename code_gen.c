@@ -76,7 +76,7 @@ void traverse(AST_Node *root){
 		Symbol *smb1;
 		Symbol *smb2;
 		int var_type, var_type1, var_type2;
-		int lid;
+		int lid, lid1;
 		
 		AST_Node *temp;
 		switch (root->node_type){
@@ -134,19 +134,24 @@ void traverse(AST_Node *root){
 				
 
 			case ASTN_OPEN_IF_STMT:
-				lid = get_label_id();
 				traverse(root->p_nodelist[0]);
+				lid = get_label_id();
 				fprintf(fp, "beqz $t5, $l_%d\n", lid);
 				traverse(root->p_nodelist[1]);								
 				fprintf(fp, "$l_%d:\n", lid);
 				break;
 			
-
 			case ASTN_OPEN_IF_ELSE_STMT:
+			case ASTN_CLOSED_IF_STMT:
 				traverse(root->p_nodelist[0]);
-				fprintf(fp, "beqz $t5, $l_%s\n", "label");
-				traverse(root->p_nodelist[1]);								
-				fprintf(fp, "$l_%s:\n", "label");
+				lid = get_label_id();
+				lid1 = get_label_id();
+				fprintf(fp, "beqz $t5, $l_%d\n", lid);
+				traverse(root->p_nodelist[1]);				
+				fprintf(fp, "b $l_%d\n", lid1);			
+				fprintf(fp, "$l_%d:\n", lid);
+				traverse(root->p_nodelist[2]);								
+				fprintf(fp, "$l_%d:\n", lid1);
 				break;
 				
 
