@@ -361,7 +361,7 @@ r_val			:	r_val '+' term
 							smb = ST_pop(st);
 							smb = check_substr(smb, temp);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_R_VAL_SUBSTR, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_R_VAL_SUBSTR, smb, $1, $3, NULL, NULL);
 						}
 			|	term
 						{
