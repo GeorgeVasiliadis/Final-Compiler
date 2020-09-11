@@ -1577,7 +1577,7 @@ yyreduce:
 							Symbol *id = HT_get(ht, (yyvsp[-2].ystr));
 							smb = check_assign(id, smb);
 							ST_push(st, smb);
-							(yyval.p_astn) = ASTN_init(ASTN_ASSIGN_EXPR, smb, NULL, NULL, NULL, NULL);							
+							(yyval.p_astn) = ASTN_init(ASTN_ASSIGN_EXPR, smb, (yyvsp[0].p_astn), NULL, NULL, NULL);							
 						}
 #line 1583 "y.tab.c"
     break;

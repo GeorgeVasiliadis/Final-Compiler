@@ -227,7 +227,7 @@ assign_expr		:	ID '=' expr
 							Symbol *id = HT_get(ht, $1);
 							smb = check_assign(id, smb);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_ASSIGN_EXPR, smb, NULL, NULL, NULL, NULL);							
+							$$ = ASTN_init(ASTN_ASSIGN_EXPR, smb, $3, NULL, NULL, NULL);							
 						}
 			;
 

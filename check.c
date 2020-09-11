@@ -244,12 +244,13 @@ Symbol *check_ne(Symbol *op1, Symbol *op2){
 }
 
 Symbol *check_assign(Symbol *op1, Symbol *op2){
-	Symbol *p = SMB_init("");
 	
 	if(!op1){
 		fprintf(stderr, "Error: Tried to use ID before declaration.\n");
 		exit(1);
 	}
+	
+	Symbol *p = SMB_init(op1->name);
 	
 	if(op1->var_type == TYPE_INT){
 		p->var_type = TYPE_INT;	

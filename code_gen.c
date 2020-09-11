@@ -4,6 +4,7 @@
 #include <stdio.h>
 
 Hashtable *constants;
+Hashtable *ids;
 FILE *fp;
 
 
@@ -15,9 +16,37 @@ void make_room(void){
 
 void declare_constants(AST_Node *root){
 	if(root){
-	Symbol *smb;
-	int var_type;
+		Symbol *smb;
+		int var_type;
 		switch(root->node_type){
+			case ASTN_ASSIGN_EXPR:
+				smb = root->wrapped_symbol;
+				var_type = smb->var_type;
+				if(HT_add(ids, smb)){
+					if(var_type == TYPE_INT){
+						fprintf(fp, "$var_%s: .word 0\n", smb->name);
+					} else if (var_type == TYPE_FLOAT){
+						fprintf(fp, "$var_%s: .float 0.0\n", smb->name);
+					}
+				}
+				break;
+	
+	
+	
+			case ASTN_FACTOR_ID:
+				smb = root->wrapped_symbol;
+				var_type = smb->var_type;
+				if(HT_add(ids, smb)){
+					if(var_type == TYPE_INT){
+						fprintf(fp, "$var_%s: .word 0\n", smb->name);
+					} else if (var_type == TYPE_FLOAT){
+						fprintf(fp, "$var_%s: .float 0.0\n", smb->name);
+					}
+				}
+				break;
+	
+	
+	
 			case ASTN_NUM_INT:
 			case ASTN_NUM_FLOAT:
 				smb = root->wrapped_symbol;
@@ -39,12 +68,12 @@ void declare_constants(AST_Node *root){
 
 void traverse(AST_Node *root){
 	if(root){
-	Symbol *smb;
-	Symbol *smb1;
-	Symbol *smb2;
-	int var_type, var_type1, var_type2;
-	
-	AST_Node *temp;
+		Symbol *smb;
+		Symbol *smb1;
+		Symbol *smb2;
+		int var_type, var_type1, var_type2;
+		
+		AST_Node *temp;
 		switch (root->node_type){
 			case ASTN_PROGRAM:
 				fputs("#Declarations\n", fp);
@@ -74,20 +103,20 @@ void traverse(AST_Node *root){
 				break;
 				
 				
-
+	
 			case ASTN_COMP_STMT:
 				traverse(root->p_nodelist[0]);
 				break;
 				
 				
-
+	
 			case ASTN_STMT_LIST:
 				traverse(root->p_nodelist[0]);
 				traverse(root->p_nodelist[1]);
 				break;
 				
-
-
+	
+	
 			case ASTN_STMT_OPEN:
 			case ASTN_STMT_CLOSED:
 				traverse(root->p_nodelist[0]);
@@ -98,14 +127,36 @@ void traverse(AST_Node *root){
 				traverse(root->p_nodelist[0]);
 				break;
 				
-
-
-
+	
+	
+	
 			case ASTN_SIMPLE_STMT_PRINTLN:
+				traverse(root->p_nodelist[0]);
+				break;
+	
+			
+			
+			case ASTN_SIMPLE_STMT_ASSIGN:
 				traverse(root->p_nodelist[0]);
 				break;
 
 
+			case ASTN_ASSIGN_STMT:
+				traverse(root->p_nodelist[0]);
+				break;
+	
+			case ASTN_ASSIGN_EXPR:
+				fputs("#Assign\n", fp);
+				traverse(root->p_nodelist[0]);
+				smb = root->wrapped_symbol;
+				var_type = smb->var_type;
+				if(var_type == TYPE_INT){
+					fprintf(fp, "sw $t7, $var_%s\n", smb->name);
+				} else if (var_type == TYPE_FLOAT){
+					fprintf(fp, "s.s $f7, $var_%s\n", smb->name);
+				}
+				make_room();
+				break;
 
 			case ASTN_PRINTLN_STMT:
 				fputs("#Print\n", fp);
@@ -129,13 +180,14 @@ void traverse(AST_Node *root){
 				make_room();
 				break;
 				
+	
+	
 
-
-			case ASTN_EXPR_R_VAL:
+			case ASTN_EXPR_R_VAL:	//7//
 				traverse(root->p_nodelist[0]);
 				break;
-
-
+	
+	
 			case ASTN_R_VAL_SUBSTR:
 				smb = root->wrapped_symbol;
 				smb1 = root->p_nodelist[0]->wrapped_symbol;
@@ -171,9 +223,9 @@ void traverse(AST_Node *root){
 				}
 				fputc('\n', fp);
 				break;
-
-
-
+	
+	
+	
 			case ASTN_R_VAL_ADD:
 				smb = root->wrapped_symbol;
 				smb1 = root->p_nodelist[0]->wrapped_symbol;
@@ -211,7 +263,7 @@ void traverse(AST_Node *root){
 				break;
 				
 				
-
+	
 			case ASTN_R_VAL_TERM:
 				traverse(root->p_nodelist[0]);
 	
@@ -223,10 +275,10 @@ void traverse(AST_Node *root){
 					fputs("mov.s $f7, $f8", fp);
 				}
 				fputc('\n', fp);
-
+	
 				break;
 			
-
+	
 				case ASTN_TERM_MULT:
 				smb = root->wrapped_symbol;
 				smb1 = root->p_nodelist[0]->wrapped_symbol;
@@ -262,9 +314,9 @@ void traverse(AST_Node *root){
 				}
 				fputc('\n', fp);
 				break;
-
-
-
+	
+	
+	
 				case ASTN_TERM_DIVISION:
 				smb = root->wrapped_symbol;
 				smb1 = root->p_nodelist[0]->wrapped_symbol;
@@ -308,10 +360,10 @@ void traverse(AST_Node *root){
 				fputc('\n', fp);
 				break;
 			
-
+	
 			case ASTN_TERM_FACTOR:
 				traverse(root->p_nodelist[0]);
-
+	
 				smb = root->wrapped_symbol;
 				var_type = smb->var_type;
 				if(var_type == TYPE_INT){
@@ -320,11 +372,22 @@ void traverse(AST_Node *root){
 					fputs("mov.s $f8, $f9", fp);
 				}
 				fputc('\n', fp);
-
+	
 				break;
 				
-				
-
+			
+			
+			case ASTN_FACTOR_ID:
+				smb = root->wrapped_symbol;
+				var_type = smb->var_type;
+				if(var_type == TYPE_INT){
+					fprintf(fp, "lw $t9, $var_%s", smb->name);
+				} else if (var_type == TYPE_FLOAT){
+					fprintf(fp, "l.s $f9, $var_%s", smb->name);
+				}
+				fputc('\n', fp);
+				break;
+	
 			case ASTN_FACTOR_NUM:
 				smb = root->wrapped_symbol;
 				var_type = smb->var_type;
@@ -337,7 +400,7 @@ void traverse(AST_Node *root){
 				fputc('\n', fp);
 				break;
 				
-
+	
 			case ASTN_NUM_INT:
 			case ASTN_NUM_FLOAT:
 					smb = root->wrapped_symbol;
@@ -351,6 +414,7 @@ void traverse(AST_Node *root){
 void generate_code(AST_Node *root){
 	fp = fopen("out.final.asm", "w");
 	constants = HT_init();
+	ids = HT_init();
 	
 	if(fp){
 		traverse(root);
