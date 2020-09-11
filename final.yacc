@@ -386,7 +386,7 @@ term			:	term '*' factor
 							smb = ST_pop(st);
 							smb = check_division(smb, temp);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_TERM_DIVISION, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_TERM_DIVISION, smb, $1, $3, NULL, NULL);
 						}
 			|	factor
 						{

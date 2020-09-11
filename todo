@@ -9,3 +9,5 @@ println(-2.4/-1.235 <= 0);
 3)error system. what is printed, where it is printed, how it is printed.
 
 4) !! manual memory leakage test !!
+
+5) check zero division

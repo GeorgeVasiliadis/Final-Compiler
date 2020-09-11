@@ -1,9 +1,10 @@
 #Declarations
 .data
-$t_5: .word 5
+$err_zero: .asciiz "Error: Tried to divide by zero."
+$t_10: .word 10
+$t_4: .word 4
+$t_8.0: .float 8.000000
 $t_3: .word 3
-$t_5.0: .float 5.000000
-$t_3.0: .float 3.000000
 
 
 
@@ -12,58 +13,41 @@ $t_3.0: .float 3.000000
 
 
 #Print
-lw $t0, $t_5
-move $t1, $t0
-lw $t0, $t_3
-move $t0, $t0
-mul $t0, $t1, $t0
-li $v0, 1
-move $a0, $t0
-syscall
+lw $t9, $t_10
+move $t8, $t9
+move $t7, $t8
+move $t7, $t7
+lw $t9, $t_4
+move $t8, $t9
+move $t8, $t8
+l.s $f9, $t_8.0
+mtc1 $zero, $f18
+c.eq.s $f9, $f18
+bc1t err_zero
+
+mtc1 $t8, $f8
+cvt.s.w $f8, $f8
+div.s $f8, $f8, $f9
 
 
+mtc1 $t7, $f7
+cvt.s.w $f7, $f7
+add.s $f7, $f7, $f8
 
-#Print newline
-li $v0, 11
-li $a0, 10
-syscall
+mov.s $f7, $f7
+lw $t9, $t_3
+move $t8, $t9
+move $t8, $t8
+lw $t9, $t_4
 
+mul $t8, $t8, $t9
 
-
-#Print
-l.s $f0, $t_5.0
-mov.s $f1, $f0
-lw $t0, $t_3
-move $t0, $t0
-mtc1 $t0, $f0
-cvt.s.w $f0, $f0
-mul.s $f0, $f1, $f0
-
-li $v0, 2
-mov.s $f12, $f0
-syscall
-
-
-
-#Print newline
-li $v0, 11
-li $a0, 10
-syscall
-
-
-
-#Print
-lw $t0, $t_5
-move $t1, $t0
-l.s $f0, $t_3.0
-mov.s $f0, $f0
-
-mtc1 $t1, $f1
-cvt.s.w $f1, $f1
-mul.s $f0, $f1, $f0
+mtc1 $t8, $f8
+cvt.s.w $f8, $f8
+add.s $f7, $f7, $f8
 
 li $v0, 2
-mov.s $f12, $f0
+mov.s $f12, $f7
 syscall
 
 
@@ -75,27 +59,21 @@ syscall
 
 
 
-#Print
-l.s $f0, $t_5.0
-mov.s $f1, $f0
-l.s $f0, $t_3.0
-mov.s $f0, $f0
 
-mul.s $f0, $f1, $f0
 
-li $v0, 2
-mov.s $f12, $f0
+
+b halt
+
+#Print Zero-Division error
+err_zero:
+li $v0, 4
+la $a0, $err_zero
 syscall
+b halt
 
 
 
-#Print newline
-li $v0, 11
-li $a0, 10
-syscall
-
-
-
-#Exit
+#Halt
+halt:
 li $v0, 10
 syscall
