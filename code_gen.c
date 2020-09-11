@@ -7,6 +7,10 @@ Hashtable *constants;
 Hashtable *ids;
 FILE *fp;
 
+int get_label_id(){
+	static int id = 0;
+	return id++;
+}
 
 void make_room(void){
 	fputc('\n', fp);
@@ -16,7 +20,6 @@ void make_room(void){
 
 void declare_constants(AST_Node *root){
 	if(root){
-	printf("%d\n", root->node_type);
 		Symbol *smb;
 		int var_type;
 		switch(root->node_type){
@@ -73,6 +76,7 @@ void traverse(AST_Node *root){
 		Symbol *smb1;
 		Symbol *smb2;
 		int var_type, var_type1, var_type2;
+		int lid;
 		
 		AST_Node *temp;
 		switch (root->node_type){
@@ -130,6 +134,15 @@ void traverse(AST_Node *root){
 				
 
 			case ASTN_OPEN_IF_STMT:
+				lid = get_label_id();
+				traverse(root->p_nodelist[0]);
+				fprintf(fp, "beqz $t5, $l_%d\n", lid);
+				traverse(root->p_nodelist[1]);								
+				fprintf(fp, "$l_%d:\n", lid);
+				break;
+			
+
+			case ASTN_OPEN_IF_ELSE_STMT:
 				traverse(root->p_nodelist[0]);
 				fprintf(fp, "beqz $t5, $l_%s\n", "label");
 				traverse(root->p_nodelist[1]);								

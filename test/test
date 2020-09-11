@@ -2,11 +2,18 @@ mainclass Test {
 	public static void main ( )
 	{	
 		int a;
-		if(a==a+1){
+		if(a==a){
 			a = 5;
 			a = a + 3;
 			println(a);
+			if(a == 9){
+				println(1.1);
+			}
+			println(2.2);
 		}
 		println(1111);
+		if(1== --1){
+			println(a);
+		}
 	}
 }
