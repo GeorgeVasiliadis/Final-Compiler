@@ -377,7 +377,7 @@ term			:	term '*' factor
 							smb = ST_pop(st);
 							smb = check_mult(smb, temp);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_TERM_MULT, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_TERM_MULT, smb, $1, $3, NULL, NULL);
 							
 						}
 			|	term '/' factor
