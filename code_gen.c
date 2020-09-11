@@ -16,6 +16,7 @@ void make_room(void){
 
 void declare_constants(AST_Node *root){
 	if(root){
+	printf("%d\n", root->node_type);
 		Symbol *smb;
 		int var_type;
 		switch(root->node_type){
@@ -122,7 +123,20 @@ void traverse(AST_Node *root){
 				traverse(root->p_nodelist[0]);
 				break;
 				
+			case ASTN_OPEN_STMT_IF:
+			case ASTN_CLOSED_STMT_IF:
+				traverse(root->p_nodelist[0]);
+				break;
 				
+
+			case ASTN_OPEN_IF_STMT:
+				traverse(root->p_nodelist[0]);
+				fprintf(fp, "beqz $t5, $l_%s\n", "label");
+				traverse(root->p_nodelist[1]);								
+				fprintf(fp, "$l_%s:\n", "label");
+				break;
+				
+
 			case ASTN_CLOSED_STMT_SIMPLE:
 				traverse(root->p_nodelist[0]);
 				break;
@@ -185,6 +199,49 @@ void traverse(AST_Node *root){
 				make_room();
 				break;
 				
+
+
+			case ASTN_BOOL_EXPR_EQ:
+				smb = root->wrapped_symbol;
+				smb1 = root->p_nodelist[0]->wrapped_symbol;
+				smb2 = root->p_nodelist[1]->wrapped_symbol;
+				var_type = smb->var_type;
+				var_type1 = smb1->var_type;
+				var_type2 = smb2->var_type;
+				traverse(root->p_nodelist[0]);
+				if(var_type1 == TYPE_INT){
+					fputs("move $t5, $t6", fp);
+				} else if (var_type1 == TYPE_FLOAT){
+					fputs("mov.s $f5, $f6", fp);
+				}
+				fputc('\n', fp);
+				traverse(root->p_nodelist[1]);
+				fputc('\n', fp);
+				if(var_type1 == TYPE_INT){
+					if(var_type2 == TYPE_INT){
+						fputs("seq $t5, $t5, $t6", fp);
+					} else if(var_type2 == TYPE_FLOAT){
+						fputs("mtc1 $t5, $f5\n", fp);
+						fputs("cvt.s.w $f5, $f5\n", fp);
+						fputs("c.eq.s $f5, $f6\n", fp);
+						fputs("li $t5, 1\n", fp);
+						fputs("movf $t5, $zero\n", fp);
+					}
+				} else if(var_type1 == TYPE_FLOAT){
+					if(var_type2 == TYPE_INT){
+						fputs("mtc1 $t6, $f6\n", fp);
+						fputs("cvt.s.w $f6, $f6\n", fp);
+						fputs("c.eq.s $f5, $f6\n", fp);
+						fputs("li $t5, 1\n", fp);
+						fputs("movf $t5, $zero\n", fp);
+					} else if(var_type2 == TYPE_FLOAT){
+						fputs("c.eq.s $f5, $f6\n", fp);
+						fputs("li $t5, 1\n", fp);
+						fputs("movf $t5, $zero\n", fp);
+					}
+				}
+				fputc('\n', fp);			
+				break;
 	
 	
 
@@ -347,8 +404,8 @@ void traverse(AST_Node *root){
 				if(var_type2 == TYPE_INT){
 					fputs("beqz $t9, err_zero\n", fp);
 				} else if (var_type2 == TYPE_FLOAT){
-					fputs("mtc1 $zero, $f18\n", fp);
-					fputs("c.eq.s $f9, $f18\n", fp);
+					fputs("mtc1 $zero, $f0\n", fp);
+					fputs("c.eq.s $f9, $f0\n", fp);
 					fputs("bc1t err_zero\n", fp);
 				}
 				fputc('\n', fp);

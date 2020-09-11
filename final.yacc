@@ -120,7 +120,7 @@ simple_stmt		:	assign_stmt
 						}
 			|	null_stmt
 						{
-							$$ = ASTN_init(ASTN_SIMPLE_STMT_NULL, NULL, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_SIMPLE_STMT_NULL, NULL, $1, NULL, NULL, NULL);
 						}
 
 			|	println_stmt
@@ -213,7 +213,7 @@ opassign_expr		:	assign_expr
 						{
 							smb = ST_pop(st);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_OPASSIGN_EXPR, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_OPASSIGN_EXPR, smb, $1, NULL, NULL, NULL);
 						}
 			|	/* EMPTY */
 						{
@@ -236,7 +236,7 @@ assign_expr		:	ID '=' expr
 opbool_expr		:	bool_expr
 						{
 							smb = ST_pop(st);
-							$$ = ASTN_init(ASTN_OPBOOL_EXPR, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_OPBOOL_EXPR, smb, $1, NULL, NULL, NULL);
 						}
 			|	/* EMPTY */
 						{
@@ -250,7 +250,7 @@ open_for_stmt		:	FOR '(' opassign_expr ';' opbool_expr ';' opassign_expr ')' ope
 							ST_pop(st);
 							smb = ST_pop(st);
 							ST_pop(st);
-							$$ = ASTN_init(ASTN_OPEN_FOR_STMT, smb, $3, $7, NULL, NULL);
+							$$ = ASTN_init(ASTN_OPEN_FOR_STMT, smb, $3, $5, $7, $9);
 						}
 			;
 
@@ -259,40 +259,41 @@ closed_for_stmt		:	FOR '(' opassign_expr ';' opbool_expr ';' opassign_expr ')' c
 							ST_pop(st);
 							smb = ST_pop(st);
 							ST_pop(st);
-							$$ = ASTN_init(ASTN_CLOSED_FOR_STMT, smb, $3, $7, NULL, NULL); 						
+							$$ = ASTN_init(ASTN_CLOSED_FOR_STMT, smb, $3, $5, $7, $9); 						
 						}
 			;
 							
 open_while_stmt		:	WHILE '(' bool_expr ')' open_stmt
 						{
+
 							smb = ST_pop(st);
-							$$ = ASTN_init(ASTN_OPEN_WHILE_STMT, smb, $5, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_OPEN_WHILE_STMT, smb, $3, $5, NULL, NULL);
 						}
 			;
 
 closed_while_stmt	:	WHILE '(' bool_expr ')' closed_stmt
 						{
 							smb = ST_pop(st);
-							$$ = ASTN_init(ASTN_CLOSED_WHILE_STMT, smb, $5, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_CLOSED_WHILE_STMT, smb, $3, $5, NULL, NULL);
 						}
 			;
 
-open_if_stmt		:	IF '(' bool_expr ')' stmt
+open_if_stmt		:	IF '(' bool_expr ')' comp_stmt
 						{
 							smb = ST_pop(st);
-							$$ = ASTN_init(ASTN_OPEN_IF_STMT, smb, $5, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_OPEN_IF_STMT, smb, $3, $5, NULL, NULL);
 						}
 			|	IF '(' bool_expr ')' closed_stmt ELSE open_stmt
 						{
 							smb = ST_pop(st);
-							$$ = ASTN_init(ASTN_OPEN_IF_ELSE_STMT, smb, $5, $7, NULL, NULL);
+							$$ = ASTN_init(ASTN_OPEN_IF_ELSE_STMT, smb, $3, $5, $7, NULL);
 						}
 			;
 
 closed_if_stmt		:	IF '(' bool_expr ')' closed_stmt ELSE closed_stmt
 						{
 							smb = ST_pop(st);
-							$$ = ASTN_init(ASTN_CLOSED_IF_STMT, smb, $5, $7, NULL, NULL);
+							$$ = ASTN_init(ASTN_CLOSED_IF_STMT, smb, $3, $5, $7, NULL);
 						}
 			;
 							
@@ -302,7 +303,7 @@ bool_expr		:	expr EQ_OP expr
 							smb = ST_pop(st);
 							smb = check_eq(smb, temp);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_BOOL_EXPR_EQ, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_BOOL_EXPR_EQ, smb, $1, $3, NULL, NULL);
 						}
 			|	expr LT_OP expr
 						{
@@ -310,7 +311,7 @@ bool_expr		:	expr EQ_OP expr
 							smb = ST_pop(st);
 							smb = check_lt(smb, temp);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_BOOL_EXPR_LT, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_BOOL_EXPR_LT, smb, $1, $3, NULL, NULL);
 						}
 			|	expr GT_OP expr
 						{
@@ -318,7 +319,7 @@ bool_expr		:	expr EQ_OP expr
 							smb = ST_pop(st);
 							smb = check_gt(smb, temp);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_BOOL_EXPR_GT, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_BOOL_EXPR_GT, smb, $1, $3, NULL, NULL);
 						}
 			|	expr LE_OP expr
 						{
@@ -326,7 +327,7 @@ bool_expr		:	expr EQ_OP expr
 							smb = ST_pop(st);
 							smb = check_le(smb, temp);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_BOOL_EXPR_LE, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_BOOL_EXPR_LE, smb, $1, $3, NULL, NULL);
 						}
 			|	expr GE_OP expr
 						{
@@ -334,7 +335,7 @@ bool_expr		:	expr EQ_OP expr
 							smb = ST_pop(st);
 							smb = check_ge(smb, temp);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_BOOL_EXPR_GE, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_BOOL_EXPR_GE, smb, $1, $3, NULL, NULL);
 						}
 			|	expr NE_OP expr
 						{
@@ -342,7 +343,7 @@ bool_expr		:	expr EQ_OP expr
 							smb = ST_pop(st);
 							smb = check_ne(smb, temp);
 							ST_push(st, smb);
-							$$ = ASTN_init(ASTN_BOOL_EXPR_NE, smb, NULL, NULL, NULL, NULL);
+							$$ = ASTN_init(ASTN_BOOL_EXPR_NE, smb, $1, $3, NULL, NULL);
 						}
 			;
 
