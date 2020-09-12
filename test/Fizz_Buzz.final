@@ -1,0 +1,30 @@
+// This is a super simplistic implementation of
+// classic Fizz Buzz, written in Final.
+//
+// George Vasiliadis, 12/9/20
+
+mainclass Fizz_Buzz {
+	public static void main (){
+		int fizz, buzz;
+		fizz = 333;
+		buzz = 555;
+		
+		int i, c3, c5;
+		i = c3 = c5 = 1;
+		
+		int  N;
+		N = 100;
+		
+		for(; i<=N; i=i+1){
+			if(c3 == 0) println(fizz);
+			if(c5 == 0) println(buzz);
+			if(c3 != 0) if(c5 != 0) println(i);
+			
+			c3 = c3+1;
+			c5 = c5+1;
+			
+			if(c3 == 3) c3 = 0;
+			if(c5 == 5) c5 = 0;
+		}
+	}
+}

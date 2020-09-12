@@ -772,7 +772,9 @@ void traverse(AST_Node *root){
 }
 
 void generate_code(AST_Node *root){
-	fp = fopen("out.final.asm", "w");
+	Symbol *smb = root->wrapped_symbol;
+	char *fout = strcat(smb->name, ".asm");
+	fp = fopen(fout, "w");
 	constants = HT_init();
 	ids = HT_init();
 	

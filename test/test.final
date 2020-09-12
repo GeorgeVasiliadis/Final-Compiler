@@ -1,4 +1,4 @@
-mainclass Fibonacci {
+mainclass test {
 	public static void main ( ){
 		float a;// because why //not?
 		for(a=10; a>=0; a = a-1){
