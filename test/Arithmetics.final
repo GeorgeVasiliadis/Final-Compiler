@@ -1,4 +1,4 @@
-mainclass Bools {
+mainclass Arithmetics {
 	public static void main (){
 		
 		// Add

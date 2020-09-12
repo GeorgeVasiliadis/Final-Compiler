@@ -27,5 +27,7 @@ int main(){
 	}
 	printf("\n");
 	printf("File has been translated successfully!\n");
+
+
 	return 0;
 }
