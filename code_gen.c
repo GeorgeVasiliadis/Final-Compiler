@@ -401,20 +401,22 @@ void traverse(AST_Node *root){
 						fputs("mtc1 $t5, $f5\n", fp);
 						fputs("cvt.s.w $f5, $f5\n", fp);
 						fputs("c.le.s $f5, $f6\n", fp);
-						fputs("li $t5, 1\n", fp);
-						fputs("movf $t5, $zero\n", fp);
+						fputs("li $t5, 0\n", fp);
+						fputs("li $t0, 1\n", fp);
+						fputs("movf $t5, $t0\n", fp);
 					}
 				} else if(var_type1 == TYPE_FLOAT){
 					if(var_type2 == TYPE_INT){
 						fputs("mtc1 $t6, $f6\n", fp);
 						fputs("cvt.s.w $f6, $f6\n", fp);
 						fputs("c.le.s $f5, $f6\n", fp);
-						fputs("li $t5, 1\n", fp);
-						fputs("movf $t5, $zero\n", fp);
+						fputs("li $t5, 0\n", fp);
+						fputs("li $t0, 1\n", fp);
+						fputs("movf $t5, $t0\n", fp);
 					} else if(var_type2 == TYPE_FLOAT){
 						fputs("c.le.s $f5, $f6\n", fp);
-						fputs("li $t5, 1\n", fp);
-						fputs("movf $t5, $zero\n", fp);
+						fputs("li $t5, 0\n", fp);
+						fputs("li $t0, 1\n", fp);
 					}
 				}
 				fputc('\n', fp);			

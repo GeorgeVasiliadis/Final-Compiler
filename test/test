@@ -1,17 +1,29 @@
 mainclass Test {
 	public static void main ( )
 	{	
-		int a,b;
-		float c,d;
-		a = b = 5;
-		c = d = 5;
-		if(a == b)
-			println(1);
-		if(b == c)
-			println(2);
-		if(c == d)
-			println(3);
-		if(d == a)
-			println(4);
+		if(3 > 5){
+			println(111);
+		}
+		if(3 > 5.0){
+			println(222);
+		}
+		if(5 > 3){
+			println(333);
+		}
+		if(5.0 > 3){
+			println(444);
+		}
+		if(3.0 > 5.0){
+			println(55);
+		}
+		if(3.0 > 5){
+			println(666);
+		}
+		if(5.0 > 3.0){
+			println(777);
+		}
+		if(5 > 3.0){
+			println(888);
+		}
 	}
 }
