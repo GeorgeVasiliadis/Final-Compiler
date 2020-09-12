@@ -1,15 +1,17 @@
-1) proseteristikotita opou xriazete
-px -5 < -3 < -2
-eite (-5 < -3) < -2  --> 0
-eite - 5 < (-3 < -2) --> 1
+1)error system. what is printed, where it is printed, how it is printed.
 
-2) what should the output be?
-println(-2.4/-1.235 <= 0);
+2) !! manual memory leakage test !!
 
-3)error system. what is printed, where it is printed, how it is printed.
+3) Full test files for every category (e.g arithmetic_test, expressions_test, if-else_test etc)
 
-4) !! manual memory leakage test !!
+4) Hard-code optimized assembly
 
-5) check zero division
+5) Optimize code_gen workflow (less (lines-of-code) is better)
 
-6) Full test files for every category (e.g arithmetic_test, expressions_test, if-else_test etc)
+6) Tasks check
+
+7) System requirements
+
+8) COMMENTS && DOCUMENTATION
+
+9) COMMENTS in assembly

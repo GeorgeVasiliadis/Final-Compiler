@@ -150,8 +150,8 @@ void traverse(AST_Node *root){
 				fprintf(fp, "$l_%d:\n", lid);
 				traverse(root->p_nodelist[1]);
 				fprintf(fp, "beqz $t5, $l_%d\n", lid1);
-				traverse(root->p_nodelist[2]);
-				traverse(root->p_nodelist[3]);				
+				traverse(root->p_nodelist[3]);
+				traverse(root->p_nodelist[2]);				
 				fprintf(fp, "b $l_%d\n", lid);	
 				fprintf(fp, "$l_%d:\n", lid1);
 				break;

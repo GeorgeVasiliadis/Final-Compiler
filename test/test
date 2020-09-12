@@ -1,10 +1,8 @@
-mainclass Test {
-	public static void main ( )
-	{	
-		int a;
-		if(a==a);
-		for(; ; ){
-			println(a);
+mainclass Fibonacci {
+	public static void main ( ){
+		float a;// because why //not?
+		for(a=10; a>=0; a = a-1){
+			println(1/a);
 		}
 	}
 }

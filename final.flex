@@ -5,7 +5,7 @@
 #include "lexer_utils.h"
 #include "globals.h"
 
-int debug = 0;
+int debug = 1;
 
 %}
 
@@ -13,6 +13,7 @@ int debug = 0;
 
 %%
 
+"//".*			{if(debug)printf("Comment: \"%s\"\n", yytext);}
 
 "=="			{if(debug)printf("Equal Operator\n"); return EQ_OP;}
 "!="			{if(debug)printf("Different Operator\n"); return NE_OP;}
