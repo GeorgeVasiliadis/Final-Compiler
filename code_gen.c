@@ -208,8 +208,8 @@ void traverse(AST_Node *root){
 					if(var_type1 == TYPE_INT){
 						fprintf(fp, "sw $t6, $var_%s\n", smb->name);
 					} else if (var_type1 == TYPE_FLOAT) {
+						fputs("cvt.w.s $f6, $f6\n", fp);
 						fputs("mfc1 $t6, $f6\n", fp);
-						fputs("cvt.w.s $t6, $t6\n", fp);
 						fprintf(fp, "sw $t6, $var_%s\n", smb->name);
 					}
 				} else if (var_type == TYPE_FLOAT){

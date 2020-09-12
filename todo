@@ -2,8 +2,6 @@
 
 2) !! manual memory leakage test !!
 
-3) Full test files for every category (e.g arithmetic_test, expressions_test, if-else_test etc)
-
 4) Hard-code optimized assembly
 
 5) Optimize code_gen workflow (less (lines-of-code) is better)

@@ -1,5 +1,35 @@
 mainclass For {
-	public static void main ( )
-	{
+	public static void main (){
+		int a;
+		
+		// Closed Statement
+		for(a=0; a<10; a=a+1){
+			println(a);
+		}
+		
+		// Missing expression (empty-bool), should never loop 
+		for(a=0; ; a=a+1){
+			println(a);
+		}
+		
+		// Missing expression (empty-statement), should loop with previous value (a=0)
+		for(; a<10; a=a+3){
+			println(a);
+		}
+		
+		// Missing expressions, shouldn't loop
+		for(;;){
+			println(a);
+		}
+		
+		// Open Statement, should print two 'a's from loop's side
+		// and one more, not included in loop
+		for(a=0; a<2; a=a+1)
+			println(a);
+			println(a);
+		
+		// Open Statement with missing parts, shouldn't print anything
+		for(;;)
+			println(a);
 	}
 }

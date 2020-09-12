@@ -1,0 +1,63 @@
+mainclass If_Else {
+	public static void main ( )
+	{		
+		// True If statement
+		if(1==1){
+			println(0);
+		}
+		println(1);
+		
+
+
+		
+		// False If statement
+		if(1!=1){
+			println(2);
+		}
+		println(3);
+		
+
+
+		// True Open If statement
+		if(1==1)
+			println(4);
+		println(5);
+		
+
+
+		//False Open If statement
+		if(1!=1)
+			println(6);
+		println(7);
+		
+
+
+		// True If-Else statement
+		if(1==1){
+			println(8);
+		} else {
+			println(9);
+		}
+		println(10);
+
+
+
+		// False If-Else statement
+		if(1!=1){
+			println(11);
+		} else {
+			println(12);
+		}
+		println(13);
+		
+
+		// If-Else-If statement with open Else
+		if(1!=1){
+			println(14);
+		} else if(1==1){
+			println(15);
+		} else
+			println(16);
+		println(17);	
+	}
+}

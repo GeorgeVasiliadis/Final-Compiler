@@ -1,5 +1,5 @@
 mainclass Example {
-	public static void main ( ){
+	public static void main (){
 		int c;
 		float x, sum, mo;
 		c=0;

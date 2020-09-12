@@ -1,5 +1,22 @@
 mainclass While{
 	public static void main (){
-
+		int a, b;
+		a = 0;
+		b = 0;
+		
+		// Closed While statement
+		while(a<10){
+			a = a+1;
+			println(a);
+		}
+		
+		// Closed While statement, with fault initial condition
+		while(a>100){
+			println(a);
+		}
+		
+		// Open While statement, with fault initial condition
+		while(1!=1)
+			println(a);
 	}
 }

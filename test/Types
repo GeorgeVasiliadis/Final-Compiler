@@ -1,0 +1,28 @@
+mainclass While{
+	public static void main (){
+		int i;
+		float f;
+
+		// Cast int to float to int
+		i = f = 1;
+		println(i);
+		println(f);
+		
+		// Cast float to int to float;
+		f = i = 1.0;
+		println(i);
+		println(f);
+
+		// Cast float to float to int
+		i = f = 1.0;
+		println(i);
+		println(f);
+		
+		// Cast int to int to float;
+		f = i = 1;
+		println(i);
+		println(f);
+
+		
+	}
+}

@@ -1,0 +1,48 @@
+mainclass Bools {
+	public static void main (){
+		
+		// Add
+		println(1 + 0);
+		println(1 + 0.0);
+		println(1.0 + 0);
+		println(1.0 + 0.0);
+
+		// Substract
+		println(1 - 0);
+		println(1 - 0.0);
+		println(1.0 - 0);
+		println(1.0 - 0.0);
+		println(0 - 1);
+		println(0.0 - 1);
+		println(0 - 1.0);
+		println(0.0 - 1.0);
+
+		// Multiply
+		println(1 * 1);
+		println(1 * 1.0);
+		println(1.0 * 1);
+		println(1.0 * 1.0);
+		println(-1 * 1);
+		println(-1 * 1.0);
+		println(-1.0 * 1);
+		println(-1.0 * 1.0);
+		println(1 * -1);
+		println(1 * -1.0);
+		println(1.0 * -1);
+		println(1.0 * -1.0);
+
+		// Divide
+		println(1 / 1);
+		println(1 / 1.0);
+		println(1.0 / 1);
+		println(1.0 / 1.0);
+		println(-1 / 1);
+		println(-1 / 1.0);
+		println(-1.0 / 1);
+		println(-1.0 / 1.0);
+		println(1 / -1);
+		println(1 / -1.0);
+		println(1.0 / -1);
+		println(1.0 / -1.0);
+	}
+}
