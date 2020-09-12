@@ -203,11 +203,25 @@ void traverse(AST_Node *root){
 				fputs("#Assign\n", fp);
 				traverse(root->p_nodelist[0]);
 				smb = root->wrapped_symbol;
+				smb1 = root->p_nodelist[0]->wrapped_symbol;
 				var_type = smb->var_type;
+				var_type1 = smb1->var_type;
 				if(var_type == TYPE_INT){
-					fprintf(fp, "sw $t6, $var_%s\n", smb->name);
+					if(var_type1 == TYPE_INT){
+						fprintf(fp, "sw $t6, $var_%s\n", smb->name);
+					} else if (var_type1 == TYPE_FLOAT) {
+						fputs("mfc1 $t6, $f6\n", fp);
+						fputs("cvt.w.s $t6, $t6\n", fp);
+						fprintf(fp, "sw $t6, $var_%s\n", smb->name);
+					}
 				} else if (var_type == TYPE_FLOAT){
-					fprintf(fp, "s.s $f6, $var_%s\n", smb->name);
+					if(var_type1 == TYPE_INT){
+						fputs("mtc1 $t6, $f6\n", fp);
+						fputs("cvt.s.w $f6, $f6\n", fp);
+						fprintf(fp, "s.s $f6, $var_%s\n", smb->name);
+					} else if(var_type1 == TYPE_FLOAT){
+						fprintf(fp, "s.s $f6, $var_%s\n", smb->name);					
+					}
 				}
 				make_room();
 				break;
@@ -363,6 +377,48 @@ void traverse(AST_Node *root){
 				fputc('\n', fp);			
 				break;
 	
+		
+			case ASTN_BOOL_EXPR_GT:
+				smb = root->wrapped_symbol;
+				smb1 = root->p_nodelist[0]->wrapped_symbol;
+				smb2 = root->p_nodelist[1]->wrapped_symbol;
+				var_type = smb->var_type;
+				var_type1 = smb1->var_type;
+				var_type2 = smb2->var_type;
+				traverse(root->p_nodelist[0]);
+				if(var_type1 == TYPE_INT){
+					fputs("move $t5, $t6", fp);
+				} else if (var_type1 == TYPE_FLOAT){
+					fputs("mov.s $f5, $f6", fp);
+				}
+				fputc('\n', fp);
+				traverse(root->p_nodelist[1]);
+				fputc('\n', fp);
+				if(var_type1 == TYPE_INT){
+					if(var_type2 == TYPE_INT){
+						fputs("sgt $t5, $t5, $t6", fp);
+					} else if(var_type2 == TYPE_FLOAT){
+						fputs("mtc1 $t5, $f5\n", fp);
+						fputs("cvt.s.w $f5, $f5\n", fp);
+						fputs("c.le.s $f5, $f6\n", fp);
+						fputs("li $t5, 1\n", fp);
+						fputs("movf $t5, $zero\n", fp);
+					}
+				} else if(var_type1 == TYPE_FLOAT){
+					if(var_type2 == TYPE_INT){
+						fputs("mtc1 $t6, $f6\n", fp);
+						fputs("cvt.s.w $f6, $f6\n", fp);
+						fputs("c.le.s $f5, $f6\n", fp);
+						fputs("li $t5, 1\n", fp);
+						fputs("movf $t5, $zero\n", fp);
+					} else if(var_type2 == TYPE_FLOAT){
+						fputs("c.le.s $f5, $f6\n", fp);
+						fputs("li $t5, 1\n", fp);
+						fputs("movf $t5, $zero\n", fp);
+					}
+				}
+				fputc('\n', fp);			
+				break;
 
 			case ASTN_EXPR_R_VAL:
 				traverse(root->p_nodelist[0]);

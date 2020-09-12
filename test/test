@@ -1,36 +1,17 @@
-mainclass FizzBuzz {
+mainclass Test {
 	public static void main ( )
 	{	
-		int fizz, buzz, t1, t2, N, i;
-		fizz = 111111;
-		buzz = 2*fizz;
-		i = t1 = t2 =0;
-		N = 100;
-
-		while(i < N){
-			if(t1 == 0){
-				println(fizz);
-			}
-			if(t2 == 0){
-				println(buzz);
-			}
-			
-			if(t1 == 0){
-			} else if(t2 == 0){
-				} else {
-					println(i);
-				}
-			
-			t1 = t1 + 1;
-			t2 = t2 + 1;
-			
-			if(t1 == 3){
-				t1 = 0;
-			}
-			if(t2 == 5){
-				t2 = 0;
-			}
-			i = i + 1;
-		}
+		int a,b;
+		float c,d;
+		a = b = 5;
+		c = d = 5;
+		if(a == b)
+			println(1);
+		if(b == c)
+			println(2);
+		if(c == d)
+			println(3);
+		if(d == a)
+			println(4);
 	}
 }
