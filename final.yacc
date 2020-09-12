@@ -218,7 +218,9 @@ opassign_expr		:	assign_expr
 						}
 			|	/* EMPTY */
 						{
-							$$ = ASTN_init(ASTN_OPASSIGN_EXPR_EMPTY, NULL, NULL, NULL, NULL, NULL);
+							smb = SMB_init("");
+							ST_push(st, smb);
+							$$ = ASTN_init(ASTN_OPASSIGN_EXPR_EMPTY, smb, NULL, NULL, NULL, NULL);
 						}	
 			;
 	
@@ -237,11 +239,14 @@ assign_expr		:	ID '=' expr
 opbool_expr		:	bool_expr
 						{
 							smb = ST_pop(st);
+							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_OPBOOL_EXPR, smb, $1, NULL, NULL, NULL);
 						}
 			|	/* EMPTY */
 						{
-							$$ = ASTN_init(ASTN_OPBOOL_EXPR_EMPTY, NULL, NULL, NULL, NULL, NULL);
+							smb = SMB_init("");
+							ST_push(st, smb);
+							$$ = ASTN_init(ASTN_OPBOOL_EXPR_EMPTY, smb, NULL, NULL, NULL, NULL);
 						}
 			;
 							

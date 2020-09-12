@@ -23,6 +23,7 @@ void declare_constants(AST_Node *root){
 		Symbol *smb;
 		int var_type;
 		switch(root->node_type){
+			case ASTN_OPASSIGN_EXPR:
 			case ASTN_ASSIGN_EXPR:
 				smb = root->wrapped_symbol;
 				var_type = smb->var_type;
@@ -80,6 +81,35 @@ void traverse(AST_Node *root){
 		
 		AST_Node *temp;
 		switch (root->node_type){
+
+			case ASTN_OPEN_STMT_WHILE:
+			case ASTN_CLOSED_STMT_WHILE:
+			case ASTN_COMP_STMT:
+			case ASTN_OPEN_STMT_IF:
+			case ASTN_CLOSED_STMT_IF:
+			case ASTN_CLOSED_STMT_SIMPLE:
+			case ASTN_SIMPLE_STMT_PRINTLN:
+			case ASTN_SIMPLE_STMT_ASSIGN:
+			case ASTN_ASSIGN_STMT:
+			case ASTN_OPASSIGN_EXPR:
+			case ASTN_EXPR_ASSIGN_EXPR:
+			case ASTN_STMT_OPEN:
+			case ASTN_STMT_CLOSED:
+			case ASTN_OPEN_STMT_FOR:
+			case ASTN_CLOSED_STMT_FOR:
+			case ASTN_OPBOOL_EXPR:
+				traverse(root->p_nodelist[0]);
+				break;
+				
+			case ASTN_OPBOOL_EXPR_EMPTY:
+				fputs("li $t5, 0\n", fp);
+				break;
+
+			case ASTN_STMT_LIST:
+				traverse(root->p_nodelist[0]);
+				traverse(root->p_nodelist[1]);
+				break;
+
 			case ASTN_PROGRAM:
 				fputs("#Declarations\n", fp);
 				fputs(".data\n", fp);
@@ -109,27 +139,24 @@ void traverse(AST_Node *root){
 				
 				
 	
-			case ASTN_COMP_STMT:
+
+
+
+			case ASTN_OPEN_FOR_STMT:
+			case ASTN_CLOSED_FOR_STMT:
 				traverse(root->p_nodelist[0]);
-				break;
-				
-				
-	
-			case ASTN_STMT_LIST:
-				traverse(root->p_nodelist[0]);
+				lid = get_label_id();
+				lid1 = get_label_id();		
+				fprintf(fp, "$l_%d:\n", lid);
 				traverse(root->p_nodelist[1]);
+				fprintf(fp, "beqz $t5, $l_%d\n", lid1);
+				traverse(root->p_nodelist[2]);
+				traverse(root->p_nodelist[3]);				
+				fprintf(fp, "b $l_%d\n", lid);	
+				fprintf(fp, "$l_%d:\n", lid1);
 				break;
-				
-	
-	
-			case ASTN_STMT_OPEN:
-			case ASTN_STMT_CLOSED:
-				traverse(root->p_nodelist[0]);
-				break;
-				
-			case ASTN_CLOSED_STMT_WHILE:
-				traverse(root->p_nodelist[0]);
-				break;
+
+
 				
 			case ASTN_OPEN_WHILE_STMT:
 			case ASTN_CLOSED_WHILE_STMT:
@@ -144,10 +171,6 @@ void traverse(AST_Node *root){
 				break;
 				
 				
-			case ASTN_OPEN_STMT_IF:
-			case ASTN_CLOSED_STMT_IF:
-				traverse(root->p_nodelist[0]);
-				break;
 				
 
 			case ASTN_OPEN_IF_STMT:
@@ -172,32 +195,7 @@ void traverse(AST_Node *root){
 				break;
 				
 
-			case ASTN_CLOSED_STMT_SIMPLE:
-				traverse(root->p_nodelist[0]);
-				break;
-				
-	
-	
-	
-			case ASTN_SIMPLE_STMT_PRINTLN:
-				traverse(root->p_nodelist[0]);
-				break;
-	
-			
-			
-			case ASTN_SIMPLE_STMT_ASSIGN:
-				traverse(root->p_nodelist[0]);
-				break;
 
-
-			case ASTN_ASSIGN_STMT:
-				traverse(root->p_nodelist[0]);
-				break;
-				
-				
-			case ASTN_EXPR_ASSIGN_EXPR:
-				traverse(root->p_nodelist[0]);
-				break;
 	
 			case ASTN_ASSIGN_EXPR:
 				fputs("#Assign\n", fp);
@@ -617,7 +615,7 @@ void traverse(AST_Node *root){
 				break;
 			
 	
-				case ASTN_TERM_MULT:
+			case ASTN_TERM_MULT:
 				smb = root->wrapped_symbol;
 				smb1 = root->p_nodelist[0]->wrapped_symbol;
 				smb2 = root->p_nodelist[1]->wrapped_symbol;
@@ -655,7 +653,7 @@ void traverse(AST_Node *root){
 	
 	
 	
-				case ASTN_TERM_DIVISION:
+			case ASTN_TERM_DIVISION:
 				smb = root->wrapped_symbol;
 				smb1 = root->p_nodelist[0]->wrapped_symbol;
 				smb2 = root->p_nodelist[1]->wrapped_symbol;

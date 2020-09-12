@@ -11,3 +11,5 @@ println(-2.4/-1.235 <= 0);
 4) !! manual memory leakage test !!
 
 5) check zero division
+
+6) Full test files for every category (e.g arithmetic_test, expressions_test, if-else_test etc)

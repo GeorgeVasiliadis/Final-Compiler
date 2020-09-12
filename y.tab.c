@@ -640,9 +640,9 @@ static const yytype_int16 yyrline[] =
        0,    44,    44,    51,    57,    62,    67,    71,    77,    81,
       85,    91,    95,    99,   103,   109,   114,   118,   122,   127,
      134,   142,   150,   157,   166,   175,   186,   192,   200,   205,
-     213,   220,   225,   237,   243,   249,   258,   267,   275,   282,
-     287,   294,   301,   309,   317,   325,   333,   341,   351,   360,
-     368,   376,   385,   393,   401,   407,   414,   424,   432,   440
+     213,   220,   227,   239,   246,   254,   263,   272,   280,   287,
+     292,   299,   306,   314,   322,   330,   338,   346,   356,   365,
+     373,   381,   390,   398,   406,   412,   419,   429,   437,   445
 };
 #endif
 
@@ -1565,13 +1565,15 @@ yyreduce:
   case 31:
 #line 220 "final.yacc"
                                                 {
-							(yyval.p_astn) = ASTN_init(ASTN_OPASSIGN_EXPR_EMPTY, NULL, NULL, NULL, NULL, NULL);
+							smb = SMB_init("");
+							ST_push(st, smb);
+							(yyval.p_astn) = ASTN_init(ASTN_OPASSIGN_EXPR_EMPTY, smb, NULL, NULL, NULL, NULL);
 						}
-#line 1571 "y.tab.c"
+#line 1573 "y.tab.c"
     break;
 
   case 32:
-#line 226 "final.yacc"
+#line 228 "final.yacc"
                                                 {
 							smb = ST_pop(st);
 							Symbol *id = HT_get(ht, (yyvsp[-2].ystr));
@@ -1579,96 +1581,99 @@ yyreduce:
 							ST_push(st, smb);
 							(yyval.p_astn) = ASTN_init(ASTN_ASSIGN_EXPR, smb, (yyvsp[0].p_astn), NULL, NULL, NULL);							
 						}
-#line 1583 "y.tab.c"
+#line 1585 "y.tab.c"
     break;
 
   case 33:
-#line 238 "final.yacc"
+#line 240 "final.yacc"
                                                 {
 							smb = ST_pop(st);
+							ST_push(st, smb);
 							(yyval.p_astn) = ASTN_init(ASTN_OPBOOL_EXPR, smb, (yyvsp[0].p_astn), NULL, NULL, NULL);
 						}
-#line 1592 "y.tab.c"
+#line 1595 "y.tab.c"
     break;
 
   case 34:
-#line 243 "final.yacc"
+#line 246 "final.yacc"
                                                 {
-							(yyval.p_astn) = ASTN_init(ASTN_OPBOOL_EXPR_EMPTY, NULL, NULL, NULL, NULL, NULL);
+							smb = SMB_init("");
+							ST_push(st, smb);
+							(yyval.p_astn) = ASTN_init(ASTN_OPBOOL_EXPR_EMPTY, smb, NULL, NULL, NULL, NULL);
 						}
-#line 1600 "y.tab.c"
+#line 1605 "y.tab.c"
     break;
 
   case 35:
-#line 250 "final.yacc"
+#line 255 "final.yacc"
                                                 {
 							ST_pop(st);
 							smb = ST_pop(st);
 							ST_pop(st);
 							(yyval.p_astn) = ASTN_init(ASTN_OPEN_FOR_STMT, smb, (yyvsp[-6].p_astn), (yyvsp[-4].p_astn), (yyvsp[-2].p_astn), (yyvsp[0].p_astn));
 						}
-#line 1611 "y.tab.c"
+#line 1616 "y.tab.c"
     break;
 
   case 36:
-#line 259 "final.yacc"
+#line 264 "final.yacc"
                                                 {
 							ST_pop(st);
 							smb = ST_pop(st);
 							ST_pop(st);
 							(yyval.p_astn) = ASTN_init(ASTN_CLOSED_FOR_STMT, smb, (yyvsp[-6].p_astn), (yyvsp[-4].p_astn), (yyvsp[-2].p_astn), (yyvsp[0].p_astn)); 						
 						}
-#line 1622 "y.tab.c"
+#line 1627 "y.tab.c"
     break;
 
   case 37:
-#line 268 "final.yacc"
+#line 273 "final.yacc"
                                                 {
 
 							smb = ST_pop(st);
 							(yyval.p_astn) = ASTN_init(ASTN_OPEN_WHILE_STMT, smb, (yyvsp[-2].p_astn), (yyvsp[0].p_astn), NULL, NULL);
 						}
-#line 1632 "y.tab.c"
+#line 1637 "y.tab.c"
     break;
 
   case 38:
-#line 276 "final.yacc"
+#line 281 "final.yacc"
                                                 {
 							smb = ST_pop(st);
 							(yyval.p_astn) = ASTN_init(ASTN_CLOSED_WHILE_STMT, smb, (yyvsp[-2].p_astn), (yyvsp[0].p_astn), NULL, NULL);
 						}
-#line 1641 "y.tab.c"
+#line 1646 "y.tab.c"
     break;
 
   case 39:
-#line 283 "final.yacc"
+#line 288 "final.yacc"
                                                 {
 							smb = ST_pop(st);
 							(yyval.p_astn) = ASTN_init(ASTN_OPEN_IF_STMT, smb, (yyvsp[-2].p_astn), (yyvsp[0].p_astn), NULL, NULL);
 						}
-#line 1650 "y.tab.c"
+#line 1655 "y.tab.c"
     break;
 
   case 40:
-#line 288 "final.yacc"
+#line 293 "final.yacc"
                                                 {
 							smb = ST_pop(st);
 							(yyval.p_astn) = ASTN_init(ASTN_OPEN_IF_ELSE_STMT, smb, (yyvsp[-4].p_astn), (yyvsp[-2].p_astn), (yyvsp[0].p_astn), NULL);
 						}
-#line 1659 "y.tab.c"
+#line 1664 "y.tab.c"
     break;
 
   case 41:
-#line 295 "final.yacc"
+#line 300 "final.yacc"
                                                 {
 							smb = ST_pop(st);
 							(yyval.p_astn) = ASTN_init(ASTN_CLOSED_IF_STMT, smb, (yyvsp[-4].p_astn), (yyvsp[-2].p_astn), (yyvsp[0].p_astn), NULL);
 						}
-#line 1668 "y.tab.c"
+#line 1673 "y.tab.c"
     break;
 
   case 42:
-#line 302 "final.yacc"
+#line 307 "final.yacc"
                                                 {
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
@@ -1676,11 +1681,11 @@ yyreduce:
 							ST_push(st, smb);
 							(yyval.p_astn) = ASTN_init(ASTN_BOOL_EXPR_EQ, smb, (yyvsp[-2].p_astn), (yyvsp[0].p_astn), NULL, NULL);
 						}
-#line 1680 "y.tab.c"
+#line 1685 "y.tab.c"
     break;
 
   case 43:
-#line 310 "final.yacc"
+#line 315 "final.yacc"
                                                 {
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
@@ -1688,11 +1693,11 @@ yyreduce:
 							ST_push(st, smb);
 							(yyval.p_astn) = ASTN_init(ASTN_BOOL_EXPR_LT, smb, (yyvsp[-2].p_astn), (yyvsp[0].p_astn), NULL, NULL);
 						}
-#line 1692 "y.tab.c"
+#line 1697 "y.tab.c"
     break;
 
   case 44:
-#line 318 "final.yacc"
+#line 323 "final.yacc"
                                                 {
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
@@ -1700,11 +1705,11 @@ yyreduce:
 							ST_push(st, smb);
 							(yyval.p_astn) = ASTN_init(ASTN_BOOL_EXPR_GT, smb, (yyvsp[-2].p_astn), (yyvsp[0].p_astn), NULL, NULL);
 						}
-#line 1704 "y.tab.c"
+#line 1709 "y.tab.c"
     break;
 
   case 45:
-#line 326 "final.yacc"
+#line 331 "final.yacc"
                                                 {
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
@@ -1712,11 +1717,11 @@ yyreduce:
 							ST_push(st, smb);
 							(yyval.p_astn) = ASTN_init(ASTN_BOOL_EXPR_LE, smb, (yyvsp[-2].p_astn), (yyvsp[0].p_astn), NULL, NULL);
 						}
-#line 1716 "y.tab.c"
+#line 1721 "y.tab.c"
     break;
 
   case 46:
-#line 334 "final.yacc"
+#line 339 "final.yacc"
                                                 {
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
@@ -1724,11 +1729,11 @@ yyreduce:
 							ST_push(st, smb);
 							(yyval.p_astn) = ASTN_init(ASTN_BOOL_EXPR_GE, smb, (yyvsp[-2].p_astn), (yyvsp[0].p_astn), NULL, NULL);
 						}
-#line 1728 "y.tab.c"
+#line 1733 "y.tab.c"
     break;
 
   case 47:
-#line 342 "final.yacc"
+#line 347 "final.yacc"
                                                 {
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
@@ -1736,11 +1741,11 @@ yyreduce:
 							ST_push(st, smb);
 							(yyval.p_astn) = ASTN_init(ASTN_BOOL_EXPR_NE, smb, (yyvsp[-2].p_astn), (yyvsp[0].p_astn), NULL, NULL);
 						}
-#line 1740 "y.tab.c"
+#line 1745 "y.tab.c"
     break;
 
   case 48:
-#line 352 "final.yacc"
+#line 357 "final.yacc"
                                                 {
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
@@ -1749,11 +1754,11 @@ yyreduce:
 							(yyval.p_astn) = ASTN_init(ASTN_R_VAL_ADD, smb, (yyvsp[-2].p_astn), (yyvsp[0].p_astn), NULL, NULL);
 						
 						}
-#line 1753 "y.tab.c"
+#line 1758 "y.tab.c"
     break;
 
   case 49:
-#line 361 "final.yacc"
+#line 366 "final.yacc"
                                                 {
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
@@ -1761,21 +1766,21 @@ yyreduce:
 							ST_push(st, smb);
 							(yyval.p_astn) = ASTN_init(ASTN_R_VAL_SUBSTR, smb, (yyvsp[-2].p_astn), (yyvsp[0].p_astn), NULL, NULL);
 						}
-#line 1765 "y.tab.c"
+#line 1770 "y.tab.c"
     break;
 
   case 50:
-#line 369 "final.yacc"
+#line 374 "final.yacc"
                                                 {
 							smb = ST_pop(st);
 							ST_push(st, smb);
 							(yyval.p_astn) = ASTN_init(ASTN_R_VAL_TERM, smb, (yyvsp[0].p_astn), NULL, NULL, NULL);	
 						}
-#line 1775 "y.tab.c"
+#line 1780 "y.tab.c"
     break;
 
   case 51:
-#line 377 "final.yacc"
+#line 382 "final.yacc"
                                                 {
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
@@ -1784,11 +1789,11 @@ yyreduce:
 							(yyval.p_astn) = ASTN_init(ASTN_TERM_MULT, smb, (yyvsp[-2].p_astn), (yyvsp[0].p_astn), NULL, NULL);
 							
 						}
-#line 1788 "y.tab.c"
+#line 1793 "y.tab.c"
     break;
 
   case 52:
-#line 386 "final.yacc"
+#line 391 "final.yacc"
                                                 {
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
@@ -1796,42 +1801,42 @@ yyreduce:
 							ST_push(st, smb);
 							(yyval.p_astn) = ASTN_init(ASTN_TERM_DIVISION, smb, (yyvsp[-2].p_astn), (yyvsp[0].p_astn), NULL, NULL);
 						}
-#line 1800 "y.tab.c"
+#line 1805 "y.tab.c"
     break;
 
   case 53:
-#line 394 "final.yacc"
+#line 399 "final.yacc"
                                                 {
 							smb = ST_pop(st);
 							ST_push(st, smb);
 							(yyval.p_astn) = ASTN_init(ASTN_TERM_FACTOR, smb, (yyvsp[0].p_astn), NULL, NULL, NULL);
 						}
-#line 1810 "y.tab.c"
+#line 1815 "y.tab.c"
     break;
 
   case 54:
-#line 402 "final.yacc"
+#line 407 "final.yacc"
                                                 {
 							smb = ST_pop(st);
 							ST_push(st, smb);
 							(yyval.p_astn) = ASTN_init(ASTN_FACTOR_PARENTH, smb, (yyvsp[-1].p_astn), NULL, NULL, NULL);
 						}
-#line 1820 "y.tab.c"
+#line 1825 "y.tab.c"
     break;
 
   case 55:
-#line 408 "final.yacc"
+#line 413 "final.yacc"
                                                 {
 							smb = ST_pop(st);
 							smb = check_uminus(smb);
 							ST_push(st, smb);
 							(yyval.p_astn) = ASTN_init(ASTN_FACTOR_UMINUS, smb, (yyvsp[0].p_astn), NULL, NULL, NULL);
 						}
-#line 1831 "y.tab.c"
+#line 1836 "y.tab.c"
     break;
 
   case 56:
-#line 415 "final.yacc"
+#line 420 "final.yacc"
                                                 {
 							smb = HT_get(ht, (yyvsp[0].ystr));
 							if(!smb){
@@ -1841,21 +1846,21 @@ yyreduce:
 							ST_push(st, smb);
 							(yyval.p_astn) = ASTN_init(ASTN_FACTOR_ID, smb, NULL, NULL, NULL, NULL);
 						}
-#line 1845 "y.tab.c"
+#line 1850 "y.tab.c"
     break;
 
   case 57:
-#line 425 "final.yacc"
+#line 430 "final.yacc"
                                                 {
 							smb = ST_pop(st);
 							ST_push(st, smb);
 							(yyval.p_astn) = ASTN_init(ASTN_FACTOR_NUM, smb, (yyvsp[0].p_astn), NULL, NULL, NULL);
 						}
-#line 1855 "y.tab.c"
+#line 1860 "y.tab.c"
     break;
 
   case 58:
-#line 433 "final.yacc"
+#line 438 "final.yacc"
                                                 {
 							smb = SMB_init((yyvsp[0].ystr));
 							smb->var_type = TYPE_INT;
@@ -1863,11 +1868,11 @@ yyreduce:
 							ST_push(st, smb);
 							(yyval.p_astn) = ASTN_init(ASTN_NUM_INT, smb, NULL, NULL, NULL, NULL);
 						}
-#line 1867 "y.tab.c"
+#line 1872 "y.tab.c"
     break;
 
   case 59:
-#line 441 "final.yacc"
+#line 446 "final.yacc"
                                                 {
 							smb = SMB_init((yyvsp[0].ystr));
 							smb->var_type = TYPE_FLOAT;
@@ -1875,11 +1880,11 @@ yyreduce:
 							ST_push(st, smb);
 							(yyval.p_astn) = ASTN_init(ASTN_NUM_FLOAT, smb, NULL, NULL, NULL, NULL);
 						}
-#line 1879 "y.tab.c"
+#line 1884 "y.tab.c"
     break;
 
 
-#line 1883 "y.tab.c"
+#line 1888 "y.tab.c"
 
       default: break;
     }
@@ -2073,4 +2078,4 @@ yyreturn:
   return yyresult;
 }
 
-#line 450 "final.yacc"
+#line 455 "final.yacc"

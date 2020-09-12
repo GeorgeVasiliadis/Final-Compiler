@@ -1,43 +1,10 @@
 mainclass Test {
 	public static void main ( )
 	{	
-		if(3 != 5){
-			println(111);
-		}
-		if(3 != 5.0){
-			println(222);
-		}
-		if(5 != 3){
-			println(333);
-		}
-		if(5.0 != 3){
-			println(444);
-		}
-		if(3.0 != 5.0){
-			println(555);
-		}
-		if(3.0 != 5){
-			println(666);
-		}
-		if(5.0 != 3.0){
-			println(777);
-		}
-		if(5 != 3.0){
-			println(888);
-		}
-		if(5 != 5){
-			println(1);
-		}
-		
-		if(5.0 != 5){
-			println(2);
-		}
-		if(5 != 5.0){
-			println(3);
-		}
-		
-		if(5.0 != 5.0){
-			println(4);
+		int a;
+		if(a==a);
+		for(; ; ){
+			println(a);
 		}
 	}
 }
