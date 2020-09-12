@@ -1,10 +1,11 @@
 mainclass Test {
 	public static void main ( )
 	{	
-		if(1==2){
-			println(1);
-		}
-		else
-			println(2);
+		int a;
+		a = 1;
+		while(a <= 10)
+			a = a+1;
+			println(a);
+		println(3);
 	}
 }

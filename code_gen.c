@@ -127,6 +127,23 @@ void traverse(AST_Node *root){
 				traverse(root->p_nodelist[0]);
 				break;
 				
+			case ASTN_CLOSED_STMT_WHILE:
+				traverse(root->p_nodelist[0]);
+				break;
+				
+			case ASTN_OPEN_WHILE_STMT:
+			case ASTN_CLOSED_WHILE_STMT:
+				lid = get_label_id();
+				lid1 = get_label_id();				
+				fprintf(fp, "$l_%d:\n", lid);
+				traverse(root->p_nodelist[0]);	
+				fprintf(fp, "beqz $t5, $l_%d\n", lid1);
+				traverse(root->p_nodelist[1]);					
+				fprintf(fp, "b $l_%d\n", lid);			
+				fprintf(fp, "$l_%d:\n", lid1);
+				break;
+				
+				
 			case ASTN_OPEN_STMT_IF:
 			case ASTN_CLOSED_STMT_IF:
 				traverse(root->p_nodelist[0]);
@@ -261,6 +278,48 @@ void traverse(AST_Node *root){
 				fputc('\n', fp);			
 				break;
 	
+
+			case ASTN_BOOL_EXPR_LE:
+				smb = root->wrapped_symbol;
+				smb1 = root->p_nodelist[0]->wrapped_symbol;
+				smb2 = root->p_nodelist[1]->wrapped_symbol;
+				var_type = smb->var_type;
+				var_type1 = smb1->var_type;
+				var_type2 = smb2->var_type;
+				traverse(root->p_nodelist[0]);
+				if(var_type1 == TYPE_INT){
+					fputs("move $t5, $t6", fp);
+				} else if (var_type1 == TYPE_FLOAT){
+					fputs("mov.s $f5, $f6", fp);
+				}
+				fputc('\n', fp);
+				traverse(root->p_nodelist[1]);
+				fputc('\n', fp);
+				if(var_type1 == TYPE_INT){
+					if(var_type2 == TYPE_INT){
+						fputs("sle $t5, $t5, $t6", fp);
+					} else if(var_type2 == TYPE_FLOAT){
+						fputs("mtc1 $t5, $f5\n", fp);
+						fputs("cvt.s.w $f5, $f5\n", fp);
+						fputs("c.le.s $f5, $f6\n", fp);
+						fputs("li $t5, 1\n", fp);
+						fputs("movf $t5, $zero\n", fp);
+					}
+				} else if(var_type1 == TYPE_FLOAT){
+					if(var_type2 == TYPE_INT){
+						fputs("mtc1 $t6, $f6\n", fp);
+						fputs("cvt.s.w $f6, $f6\n", fp);
+						fputs("c.le.s $f5, $f6\n", fp);
+						fputs("li $t5, 1\n", fp);
+						fputs("movf $t5, $zero\n", fp);
+					} else if(var_type2 == TYPE_FLOAT){
+						fputs("c.le.s $f5, $f6\n", fp);
+						fputs("li $t5, 1\n", fp);
+						fputs("movf $t5, $zero\n", fp);
+					}
+				}
+				fputc('\n', fp);			
+				break;
 	
 
 			case ASTN_EXPR_R_VAL:

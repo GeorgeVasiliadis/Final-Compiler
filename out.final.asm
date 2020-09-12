@@ -1,8 +1,10 @@
 #Declarations
 .data
 $err_zero: .asciiz "Error: Tried to divide by zero."
+$var_a: .word 0
 $t_1: .word 1
-$t_2: .word 2
+$t_10: .word 10
+$t_3: .word 3
 
 
 
@@ -10,40 +12,46 @@ $t_2: .word 2
 .text
 
 
+#Assign
 lw $t9, $t_1
+move $t8, $t9
+move $t7, $t8
+move $t6, $t7
+sw $t6, $var_a
+
+
+
+$l_0:
+lw $t9, $var_a
 move $t8, $t9
 move $t7, $t8
 move $t6, $t7
 move $t5, $t6
-lw $t9, $t_2
+lw $t9, $t_10
 move $t8, $t9
 move $t7, $t8
 move $t6, $t7
 
-seq $t5, $t5, $t6
-beqz $t5, $l_0
-#Print
+sle $t5, $t5, $t6
+beqz $t5, $l_1
+#Assign
+lw $t9, $var_a
+move $t8, $t9
+move $t7, $t8
+move $t7, $t7
 lw $t9, $t_1
 move $t8, $t9
-move $t7, $t8
+
+add $t7, $t7, $t8
 move $t6, $t7
-li $v0, 1
-move $a0, $t6
-syscall
+sw $t6, $var_a
 
 
 
-#Print newline
-li $v0, 11
-li $a0, 10
-syscall
-
-
-
-b $l_1
-$l_0:
+b $l_0
+$l_1:
 #Print
-lw $t9, $t_2
+lw $t9, $var_a
 move $t8, $t9
 move $t7, $t8
 move $t6, $t7
@@ -60,7 +68,24 @@ syscall
 
 
 
-$l_1:
+#Print
+lw $t9, $t_3
+move $t8, $t9
+move $t7, $t8
+move $t6, $t7
+li $v0, 1
+move $a0, $t6
+syscall
+
+
+
+#Print newline
+li $v0, 11
+li $a0, 10
+syscall
+
+
+
 
 
 
