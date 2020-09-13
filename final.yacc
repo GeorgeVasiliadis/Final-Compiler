@@ -1,12 +1,14 @@
 %{
-#include <stdio.h>
 #include <stdlib.h>
 #include "globals.h"
 #include "structures.h"
 #include "check.h"
+#include "logger.h"
 
 extern Stack *st;
 extern AST_Node *root;
+
+int yylex(void);
 
 Symbol *smb;
 %}
@@ -51,6 +53,7 @@ Symbol *smb;
 %%
 program			:	MAINCLASS ID '{' PUBLIC STATIC VOID MAIN '(' ')' comp_stmt '}'
 						{
+							if(DEBUG) yydbg("ASTN_PROGRAM");
 							smb = SMB_init($2);
 							root = ASTN_init(ASTN_PROGRAM, smb, $10, NULL, NULL, NULL);
 						}
@@ -60,6 +63,7 @@ program			:	MAINCLASS ID '{' PUBLIC STATIC VOID MAIN '(' ')' comp_stmt '}'
 							
 comp_stmt		:	'{' stmt_list '}'
 						{
+							if(DEBUG) yydbg("ASTN_COMP_STMT");
 							$$ = ASTN_init(ASTN_COMP_STMT, NULL, $2, NULL, NULL, NULL);
 						}
 			;
@@ -68,10 +72,12 @@ comp_stmt		:	'{' stmt_list '}'
 				
 stmt_list		:	stmt_list stmt
 						{
+							if(DEBUG) yydbg("ASTN_STMT_LIST");
 							$$ = ASTN_init(ASTN_STMT_LIST, NULL, $1, $2, NULL, NULL);	
 						}
 			|	/* EMPTY */	
 						{
+							if(DEBUG) yydbg("ASTN_STMT_LIST_EMPTY");
 							$$ = ASTN_init(ASTN_STMT_LIST_EMPTY, NULL, NULL, NULL, NULL, NULL);
 						}	
 			;
@@ -80,10 +86,12 @@ stmt_list		:	stmt_list stmt
 					
 stmt			:	open_stmt
 						{
+							if(DEBUG) yydbg("ASTN_STMT_OPEN");
 							$$ = ASTN_init(ASTN_STMT_OPEN, NULL, $1, NULL, NULL, NULL);
 						}
 			|	closed_stmt
 						{
+							if(DEBUG) yydbg("ASTN_STMT_CLOSED");
 							$$ = ASTN_init(ASTN_STMT_CLOSED, NULL, $1, NULL, NULL, NULL);
 						}
 			;
@@ -92,14 +100,17 @@ stmt			:	open_stmt
 
 open_stmt		:	open_for_stmt
 						{
+							if(DEBUG) yydbg("ASTN_OPEN_STMT_FOR");
 							$$ = ASTN_init(ASTN_OPEN_STMT_FOR, NULL, $1, NULL, NULL, NULL);
 						}
 			|	open_while_stmt
 						{
+							if(DEBUG) yydbg("ASTN_OPEN_STMT_WHILE");
 							$$ = ASTN_init(ASTN_OPEN_STMT_WHILE, NULL, $1, NULL, NULL, NULL);
 						}
 			|	open_if_stmt
 						{
+							if(DEBUG) yydbg("ASTN_OPEN_STMT_IF");
 							$$ = ASTN_init(ASTN_OPEN_STMT_IF, NULL, $1, NULL, NULL, NULL);
 						}
 			;
@@ -108,18 +119,22 @@ open_stmt		:	open_for_stmt
 
 closed_stmt		:	closed_for_stmt
 						{
+							if(DEBUG) yydbg("ASTN_CLOSED_STMT_FOR");
 							$$ = ASTN_init(ASTN_CLOSED_STMT_FOR, NULL, $1, NULL, NULL, NULL);
 						}
 			|	closed_while_stmt
 						{
+							if(DEBUG) yydbg("ASTN_CLOSED_STMT_WHILE");
 							$$ = ASTN_init(ASTN_CLOSED_STMT_WHILE, NULL, $1, NULL, NULL, NULL);
 						}
 			|	closed_if_stmt
 						{
+							if(DEBUG) yydbg("ASTN_CLOSED_STMT_IF");
 							$$ = ASTN_init(ASTN_CLOSED_STMT_IF, NULL, $1, NULL, NULL, NULL);
 						}
 			|	simple_stmt
 						{
+							if(DEBUG) yydbg("ASTN_CLOSED_STMT_SIMPLE");
 							$$ = ASTN_init(ASTN_CLOSED_STMT_SIMPLE, NULL, $1, NULL, NULL, NULL);
 						}
 			;
@@ -128,22 +143,27 @@ closed_stmt		:	closed_for_stmt
 	
 simple_stmt		:	assign_stmt
 						{
+							if(DEBUG) yydbg("ASTN_SIMPLE_STMT_ASSIGN");
 							$$ = ASTN_init(ASTN_SIMPLE_STMT_ASSIGN, NULL, $1, NULL, NULL, NULL);
 						}
 			|	 comp_stmt
 						{
+							if(DEBUG) yydbg("ASTN_COMP_STMT");
 							$$ = ASTN_init(ASTN_COMP_STMT, NULL, $1, NULL, NULL, NULL);
 						}
 			|	declaration
 						{
+							if(DEBUG) yydbg("ASTN_SIMPLE_STMT_DECLARATION");
 							$$ = ASTN_init(ASTN_SIMPLE_STMT_DECLARATION, NULL, $1, NULL, NULL, NULL);
 						}
 			|	null_stmt
 						{
+							if(DEBUG) yydbg("ASTN_SIMPLE_STMT_NULL");
 							$$ = ASTN_init(ASTN_SIMPLE_STMT_NULL, NULL, $1, NULL, NULL, NULL);
 						}
 			|	println_stmt
 						{
+							if(DEBUG) yydbg("ASTN_SIMPLE_STMT_PRINTLN");
 							$$ = ASTN_init(ASTN_SIMPLE_STMT_PRINTLN, NULL, $1, NULL, NULL, NULL);
 						}
 			;
@@ -152,6 +172,7 @@ simple_stmt		:	assign_stmt
 
 println_stmt		:	PRINTLN '(' expr ')' ';'
 						{
+							if(DEBUG) yydbg("ASTN_PRINTLN_STMT");
 							smb = ST_pop(st);
 							check_println(smb);
 							$$ = ASTN_init(ASTN_PRINTLN_STMT, smb, $3, NULL, NULL, NULL);
@@ -162,6 +183,7 @@ println_stmt		:	PRINTLN '(' expr ')' ';'
 		
 declaration		:	type id_list ';'
 						{
+							if(DEBUG) yydbg("ASTN_DECLARATION");
 							Symbol *dummy = $1->wrapped_symbol;
 							check_declaration(dummy, $2);
 							$$ = ASTN_init(ASTN_DECLARATION, dummy, $2, NULL, NULL, NULL);
@@ -172,6 +194,7 @@ declaration		:	type id_list ';'
 
 type			:	INT
 						{
+							if(DEBUG) yydbg("ASTN_TYPE_INT");
 							smb = SMB_init("");
 							smb->var_type = TYPE_INT;
 							$$ = ASTN_init(ASTN_TYPE_INT, smb, NULL, NULL, NULL, NULL);
@@ -179,7 +202,7 @@ type			:	INT
 			|
 				FLOAT
 						{
-							
+							if(DEBUG) yydbg("ASTN_TYPE_FLOAT");
 							smb = SMB_init("");
 							smb->var_type = TYPE_FLOAT;
 							$$ = ASTN_init(ASTN_TYPE_FLOAT, smb, NULL, NULL, NULL, NULL);
@@ -190,11 +213,13 @@ type			:	INT
 
 id_list			:	ID ',' id_list
 						{
+							if(DEBUG) yydbg("ASTN_ID_LIST_MORE");
 							smb = SMB_init($1);
 							$$ = ASTN_init(ASTN_ID_LIST_MORE, smb, $3, NULL, NULL, NULL);
 						}
 			|	ID
 						{
+							if(DEBUG) yydbg("ASTN_ID_LIST_ONE");
 							smb = SMB_init($1);
 							$$ = ASTN_init(ASTN_ID_LIST_ONE, smb, NULL, NULL, NULL, NULL);
 						}
@@ -204,6 +229,7 @@ id_list			:	ID ',' id_list
 
 null_stmt		:	';'
 						{
+							if(DEBUG) yydbg("ASTN_NULL_STMT");
 							$$ = ASTN_init(ASTN_NULL_STMT, NULL, NULL, NULL, NULL, NULL); 
 						}
 			;
@@ -212,6 +238,7 @@ null_stmt		:	';'
 		
 assign_stmt		:	assign_expr ';'
 						{
+							if(DEBUG) yydbg("ASTN_ASSIGN_STMT");
 							smb = ST_pop(st);
 							$$ = ASTN_init(ASTN_ASSIGN_STMT, smb, $1, NULL, NULL, NULL);
 						}
@@ -221,12 +248,14 @@ assign_stmt		:	assign_expr ';'
 
 expr			
 			:	assign_expr	{
+							if(DEBUG) yydbg("ASTN_EXPR_ASSIGN_EXPR");
 							smb = ST_pop(st);
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_EXPR_ASSIGN_EXPR, smb, $1, NULL, NULL, NULL);
 						}
 			|	r_val		
 						{
+							if(DEBUG) yydbg("ASTN_EXPR_R_VAL");
 							smb = ST_pop(st);
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_EXPR_R_VAL, smb, $1, NULL, NULL, NULL);
@@ -237,12 +266,14 @@ expr
 
 opassign_expr		:	assign_expr
 						{
+							if(DEBUG) yydbg("ASTN_OPASSIGN_EXPR");
 							smb = ST_pop(st);
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_OPASSIGN_EXPR, smb, $1, NULL, NULL, NULL);
 						}
 			|	/* EMPTY */
 						{
+							if(DEBUG) yydbg("ASTN_OPASSIGN_EXPR_EMPTY");
 							smb = SMB_init("");
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_OPASSIGN_EXPR_EMPTY, smb, NULL, NULL, NULL, NULL);
@@ -253,6 +284,7 @@ opassign_expr		:	assign_expr
 
 assign_expr		:	ID '=' expr
 						{
+							if(DEBUG) yydbg("ASTN_ASSIGN_EXPR");
 							Symbol *id = SMB_init($1);
 							smb = ST_pop(st);
 							smb = check_assign(id, smb);
@@ -265,12 +297,14 @@ assign_expr		:	ID '=' expr
 		
 opbool_expr		:	bool_expr
 						{
+							if(DEBUG) yydbg("ASTN_OPBOOL_EXPR");
 							smb = ST_pop(st);
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_OPBOOL_EXPR, smb, $1, NULL, NULL, NULL);
 						}
 			|	/* EMPTY */
 						{
+							if(DEBUG) yydbg("ASTN_OPBOOL_EXPR_EMPTY");
 							smb = SMB_init("");
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_OPBOOL_EXPR_EMPTY, smb, NULL, NULL, NULL, NULL);
@@ -281,6 +315,7 @@ opbool_expr		:	bool_expr
 			
 open_for_stmt		:	FOR '(' opassign_expr ';' opbool_expr ';' opassign_expr ')' open_stmt
 						{
+							if(DEBUG) yydbg("ASTN_OPEN_FOR_STMT");
 							ST_pop(st);
 							smb = ST_pop(st);
 							ST_pop(st);
@@ -292,6 +327,7 @@ open_for_stmt		:	FOR '(' opassign_expr ';' opbool_expr ';' opassign_expr ')' ope
 
 closed_for_stmt		:	FOR '(' opassign_expr ';' opbool_expr ';' opassign_expr ')' closed_stmt
 						{
+							if(DEBUG) yydbg("ASTN_CLOSED_FOR_STMT");
 							ST_pop(st);
 							smb = ST_pop(st);
 							ST_pop(st);
@@ -303,7 +339,7 @@ closed_for_stmt		:	FOR '(' opassign_expr ';' opbool_expr ';' opassign_expr ')' c
 				
 open_while_stmt		:	WHILE '(' bool_expr ')' open_stmt
 						{
-
+							if(DEBUG) yydbg("ASTN_OPEN_WHILE_STMT");
 							smb = ST_pop(st);
 							$$ = ASTN_init(ASTN_OPEN_WHILE_STMT, smb, $3, $5, NULL, NULL);
 						}
@@ -313,6 +349,7 @@ open_while_stmt		:	WHILE '(' bool_expr ')' open_stmt
 
 closed_while_stmt	:	WHILE '(' bool_expr ')' closed_stmt
 						{
+							if(DEBUG) yydbg("ASTN_CLOSED_WHILE_STMT");
 							smb = ST_pop(st);
 							$$ = ASTN_init(ASTN_CLOSED_WHILE_STMT, smb, $3, $5, NULL, NULL);
 						}
@@ -322,11 +359,13 @@ closed_while_stmt	:	WHILE '(' bool_expr ')' closed_stmt
 
 open_if_stmt		:	IF '(' bool_expr ')' stmt
 						{
+							if(DEBUG) yydbg("ASTN_OPEN_IF_STMT");
 							smb = ST_pop(st);
 							$$ = ASTN_init(ASTN_OPEN_IF_STMT, smb, $3, $5, NULL, NULL);
 						}
 			|	IF '(' bool_expr ')' closed_stmt ELSE open_stmt
 						{
+							if(DEBUG) yydbg("ASTN_OPEN_IF_ELSE_STMT");
 							smb = ST_pop(st);
 							$$ = ASTN_init(ASTN_OPEN_IF_ELSE_STMT, smb, $3, $5, $7, NULL);
 						}
@@ -336,6 +375,7 @@ open_if_stmt		:	IF '(' bool_expr ')' stmt
 
 closed_if_stmt		:	IF '(' bool_expr ')' closed_stmt ELSE closed_stmt
 						{
+							if(DEBUG) yydbg("ASTN_CLOSED_IF_STMT");
 							smb = ST_pop(st);
 							$$ = ASTN_init(ASTN_CLOSED_IF_STMT, smb, $3, $5, $7, NULL);
 						}
@@ -345,6 +385,7 @@ closed_if_stmt		:	IF '(' bool_expr ')' closed_stmt ELSE closed_stmt
 				
 bool_expr		:	expr EQ_OP expr
 						{
+							if(DEBUG) yydbg("ASTN_BOOL_EXPR_EQ");
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
 							smb = check_eq(smb, temp);
@@ -353,6 +394,7 @@ bool_expr		:	expr EQ_OP expr
 						}
 			|	expr LT_OP expr
 						{
+							if(DEBUG) yydbg("ASTN_BOOL_EXPR_LT");
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
 							smb = check_lt(smb, temp);
@@ -361,6 +403,7 @@ bool_expr		:	expr EQ_OP expr
 						}
 			|	expr GT_OP expr
 						{
+							if(DEBUG) yydbg("ASTN_BOOL_EXPR_GT");
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
 							smb = check_gt(smb, temp);
@@ -369,6 +412,7 @@ bool_expr		:	expr EQ_OP expr
 						}
 			|	expr LE_OP expr
 						{
+							if(DEBUG) yydbg("ASTN_BOOL_EXPR_LE");
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
 							smb = check_le(smb, temp);
@@ -377,6 +421,7 @@ bool_expr		:	expr EQ_OP expr
 						}
 			|	expr GE_OP expr
 						{
+							if(DEBUG) yydbg("ASTN_BOOL_EXPR_GE");
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
 							smb = check_ge(smb, temp);
@@ -385,6 +430,7 @@ bool_expr		:	expr EQ_OP expr
 						}
 			|	expr NE_OP expr
 						{
+							if(DEBUG) yydbg("ASTN_BOOL_EXPR_NE");
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
 							smb = check_ne(smb, temp);
@@ -397,6 +443,7 @@ bool_expr		:	expr EQ_OP expr
 
 r_val			:	r_val '+' term
 						{
+							if(DEBUG) yydbg("ASTN_R_VAL_ADD");
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
 							smb = check_add(smb, temp);
@@ -406,6 +453,7 @@ r_val			:	r_val '+' term
 						}
 			|	r_val '-' term
 						{
+							if(DEBUG) yydbg("ASTN_R_VAL_SUBSTR");
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
 							smb = check_substr(smb, temp);
@@ -414,6 +462,7 @@ r_val			:	r_val '+' term
 						}
 			|	term
 						{
+							if(DEBUG) yydbg("ASTN_R_VAL_TERM");
 							smb = ST_pop(st);
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_R_VAL_TERM, smb, $1, NULL, NULL, NULL);	
@@ -424,6 +473,7 @@ r_val			:	r_val '+' term
 	
 term			:	term '*' factor
 						{
+							if(DEBUG) yydbg("ASTN_TERM_MULT");
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
 							smb = check_mult(smb, temp);
@@ -433,6 +483,7 @@ term			:	term '*' factor
 						}
 			|	term '/' factor
 						{
+							if(DEBUG) yydbg("STN_TERM_DIVISION");
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
 							smb = check_division(smb, temp);
@@ -441,6 +492,7 @@ term			:	term '*' factor
 						}
 			|	factor
 						{
+							if(DEBUG) yydbg("ASTN_TERM_FACTOR");
 							smb = ST_pop(st);
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_TERM_FACTOR, smb, $1, NULL, NULL, NULL);
@@ -451,12 +503,14 @@ term			:	term '*' factor
 	
 factor			:	'(' expr ')'
 						{
+							if(DEBUG) yydbg("ASTN_FACTOR_PARENTH");
 							smb = ST_pop(st);
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_FACTOR_PARENTH, smb, $2, NULL, NULL, NULL);
 						}
 			|	'-' factor
 						{
+							if(DEBUG) yydbg("ASTN_FACTOR_UMINUS");
 							smb = ST_pop(st);
 							smb = check_uminus(smb);
 							ST_push(st, smb);
@@ -464,6 +518,7 @@ factor			:	'(' expr ')'
 						}
 			|	ID
 						{
+							if(DEBUG) yydbg("ASTN_FACTOR_ID");
 							smb = SMB_init($1);
 							smb = check_id_reference(smb);
 							ST_push(st, smb);
@@ -471,6 +526,7 @@ factor			:	'(' expr ')'
 						}
 			|	num
 						{
+							if(DEBUG) yydbg("ASTN_FACTOR_NUM");
 							smb = ST_pop(st);
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_FACTOR_NUM, smb, $1, NULL, NULL, NULL);
@@ -481,6 +537,7 @@ factor			:	'(' expr ')'
 
 num			:	INT_CONST
 						{
+							if(DEBUG) yydbg("ASTN_NUM_INT");
 							smb = SMB_init($1);
 							smb->var_type = TYPE_INT;
 							smb->value.i = atoi($1);
@@ -489,6 +546,7 @@ num			:	INT_CONST
 						}
 			|	FLOAT_CONST	
 						{
+							if(DEBUG) yydbg("ASTN_NUM_FLOAT");
 							smb = SMB_init($1);
 							smb->var_type = TYPE_FLOAT;
 							smb->value.f = atof($1);

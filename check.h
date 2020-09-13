@@ -11,5 +11,5 @@ Symbol *check_ge(Symbol*, Symbol*);
 Symbol *check_ne(Symbol*, Symbol*);
 Symbol *check_assign(Symbol*, Symbol*);
 Symbol *check_id_reference(Symbol *);
-void *check_declaration(Symbol*, AST_Node*);
+void check_declaration(Symbol*, AST_Node*);
 void check_println(Symbol*);

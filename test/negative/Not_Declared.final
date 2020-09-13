@@ -1,0 +1,6 @@
+mainclass Not_Declared {
+	public static void main (){
+		// Variable 'a' is not declared.
+		println(a);
+	}
+}

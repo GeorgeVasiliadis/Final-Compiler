@@ -1,72 +1,75 @@
 %{
-#include <stdio.h>
 #include <string.h>
 #include "y.tab.h"
-#include "lexer_utils.h"
 #include "globals.h"
-
-int debug = FALSE;
-
+#include "lexer_utils.h"
+#include "logger.h"
 %}
+
+
+
+
 
 %option noyywrap
 
+
+
+
+
 %%
+"//".*			{if(DEBUG)lex_dbg("Comment");}
 
-"//".*			{if(debug)printf("Comment: \"%s\"\n", yytext);}
+"=="			{if(DEBUG)lex_dbg("Equal Operator"); 				return EQ_OP;}
+"!="			{if(DEBUG)lex_dbg("Different Operator"); 			return NE_OP;}
+"<"			{if(DEBUG)lex_dbg("Less Operator"); 				return LT_OP;}
+">"			{if(DEBUG)lex_dbg("Greater Operator"); 			return GT_OP;}
+"<="			{if(DEBUG)lex_dbg("Less Equal Operator"); 			return LE_OP;}
+">="			{if(DEBUG)lex_dbg("Greater Equal Operator"); 			return GE_OP;}
 
-"=="			{if(debug)printf("Equal Operator\n"); return EQ_OP;}
-"!="			{if(debug)printf("Different Operator\n"); return NE_OP;}
-"<"			{if(debug)printf("Less Operator\n"); return LT_OP;}
-">"			{if(debug)printf("Greater Operator\n"); return GT_OP;}
-"<="			{if(debug)printf("Less Equal Operator\n"); return LE_OP;}
-">="			{if(debug)printf("Greater Equal Operator\n"); return GE_OP;}
+"="			{if(DEBUG)lex_dbg("Assign Operator"); 				return '=';}
+","			{if(DEBUG)lex_dbg("Comma"); 					return ',';}
+";"			{if(DEBUG)lex_dbg("Semicolon"); 				return ';';}
 
-"="			{if(debug)printf("Assign Operator\n"); return '=';}
-","			{if(debug)printf("Comma\n"); return ',';}
-";"			{if(debug)printf("Semicolon\n"); return ';';}
+"+"			{if(DEBUG)lex_dbg("Add Operator"); 				return '+';}
+"-"			{if(DEBUG)lex_dbg("Substract Operator"); 			return '-';}
+"*"			{if(DEBUG)lex_dbg("Multiply Operator"); 			return '*';}
+"/"			{if(DEBUG)lex_dbg("Divide Operator"); 					return '/';}
 
-"+"			{if(debug)printf("Add Operator\n"); return '+';}
-"-"			{if(debug)printf("Substract Operator\n"); return '-';}
-"*"			{if(debug)printf("Multiply Operator\n"); return '*';}
-"/"			{if(debug)printf("Divide\n"); return '/';}
-
-"{"			{if(debug)printf("Left Curly Bracket\n"); return '{';}
-"}"			{if(debug)printf("Right Curly Bracket\n"); return '}';}
-"("			{if(debug)printf("Left Parenthesis\n"); return '(';}
-")"			{if(debug)printf("Right Parenthesis\n"); return ')';}
+"{"			{if(DEBUG)lex_dbg("Left Curly Bracket"); 			return '{';}
+"}"			{if(DEBUG)lex_dbg("Right Curly Bracket"); 			return '}';}
+"("			{if(DEBUG)lex_dbg("Left Parenthesis"); 			return '(';}
+")"			{if(DEBUG)lex_dbg("Right Parenthesis"); 			return ')';}
 
 [a-zA-Z][a-zA-Z0-9_]*	{	
 				int t = check_if_reserved(yytext);
 				if(t==ID){
-					if(debug)printf("ID -> %s\n", yytext);
+					if(DEBUG)lex_dbg("ID");
 				} else {
-					if(debug)printf("Reserved Word -> %s\n", yytext);
+					if(DEBUG)lex_dbg("Reserved Word");
 				}
 				strcpy(yylval.ystr, yytext);
 				return t;
 			}
 
 0			{
-				if(debug)printf("Integer -> %s\n", yytext);
+				if(DEBUG)lex_dbg("Integer");
 				strcpy (yylval.ystr, yytext);
 				return INT_CONST;
 			}
 			
 [1-9][0-9]*		{
-				if(debug)printf("Integer -> %s\n", yytext);
+				if(DEBUG)lex_dbg("Integer");
 				strcpy(yylval.ystr, yytext);
 				return INT_CONST;
 			}
 			
 [0-9]*"."[0-9]*		{
-				if(debug)printf("Float -> %s\n", yytext);
+				if(DEBUG)lex_dbg("Float");
 				strcpy(yylval.ystr, yytext);
 				return FLOAT_CONST;
 			}
 			
 [ \t\n]			{/*WhiteSpace*/}
 
-.			{fprintf(stderr, "Error: Unrecognized character '%c'.\n", yytext[0]); exit(1);}
-
+.			{lex_err("Unrecognized Character");}
 %%

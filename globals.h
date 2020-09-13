@@ -7,6 +7,8 @@
 #define FALSE 0
 #define TRUE 1
 
+#define DEBUG FALSE
+
 #define TYPE_NONE 0
 #define TYPE_INT 1
 #define TYPE_FLOAT 2
@@ -69,9 +71,5 @@
 #define ASTN_STMT_LIST			55
 #define ASTN_COMP_STMT			56
 #define ASTN_PROGRAM			57
-
-
-int yylex();
-void yyerror(char const*);
 
 #endif

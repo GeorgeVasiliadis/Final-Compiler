@@ -1,9 +1,9 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "y.tab.h"
 #include "globals.h"
 #include "structures.h"
+#include "logger.h"
 
 /*
 //	------------------
@@ -24,7 +24,7 @@ Hashtable *HT_init(){
 		}
 		ht->size = 0;
 	} else {
-		fprintf(stderr, "Error: Out of memory.\n");
+		fin_err("Out of memory.");
 	}
 	
 	return ht;
@@ -118,7 +118,7 @@ Stack *ST_init(){
 		}
 		st->top_index = -1;
 	} else {
-		fprintf(stderr, "Error: Out of memory.\n");
+		fin_err("Out of memory.");
 	}
 	
 	return st;
@@ -133,7 +133,7 @@ void ST_push(Stack *st, Symbol *p_symb){
 		st->top_index++;
 		st->container[st->top_index] = p_symb;
 	} else {
-		fprintf(stderr, "Error: Stack out of memory.\n");
+		fin_err("Stack out of memory.");
 	}
 }
 
@@ -147,7 +147,7 @@ Symbol *ST_pop(Stack *st){
 		p_symb = st->container[st->top_index];
 		st->top_index--;
 	} else {
-		fprintf(stderr, "Error: Tried to pop from empty Stack.\n");
+		fin_err("Tried to pop from empty Stack.");
 	}
 	return p_symb;
 }	
@@ -173,7 +173,7 @@ AST_Node *ASTN_init(int node_type, Symbol *wrapped_symbol, AST_Node *ASTN_p0, AS
 		p_node->p_nodelist[2] = ASTN_p2;
 		p_node->p_nodelist[3] = ASTN_p3;
 	} else {
-		fprintf(stderr, "Error: Out of memory.\n");
+		fin_err("Out of memory.");
 	}
 	return p_node;
 }
@@ -228,22 +228,6 @@ void SMB_discard(Symbol *p_symb){
 	
 }
 
-/*
-//	Simple debugging utility.
-//	Prints basic properties of given symbol in standard output.
-*/
-void SMB_print(Symbol *p_symb){
-	if(p_symb){
-		printf("Symbol: %s\n", (p_symb->name? (char*)p_symb->name:"NULL"));
-		printf("Type: %s\n", p_symb->var_type==TYPE_FLOAT?"FLOAT":(p_symb->var_type==TYPE_INT?"INT":"None Type"));
-		printf("Integer value: %d\n", p_symb->value.i);
-		printf("Float value: %f\n", p_symb->value.f);
-		printf("Is Disposable: %s\n", p_symb->is_disposable?"TRUE":"FALSE");
-		printf("Is lValue: %s\n", p_symb->is_lvalue?"TRUE":"FALSE");
-		printf("Next Symbol: %s\n", p_symb->nextSymbol->name?(char*)p_symb->nextSymbol->name:"NULL");
-		printf("Previous Symbol: %s\n", p_symb->prevSymbol->name? (char*)p_symb->prevSymbol->name:"NULL");	
-	}
-}
 
 Symbol *ID_init(Symbol *p_symb){
 	Symbol *ptr;
@@ -255,25 +239,4 @@ Symbol *ID_init(Symbol *p_symb){
 	ptr->nextSymbol = NULL;
 	ptr->prevSymbol = NULL;
 	return ptr;
-}
-
-/*
-// Temporary testing function.
-*/
-int test(){
-	Hashtable *ht = HT_init();
-	Symbol *a = SMB_init("George");
-	a->var_type = 10;
-	
-	Symbol *b = SMB_init("Dimitra");
-	b->var_type = -55;
-	
-	Symbol *c = SMB_init("George");
-	c->var_type = 3;
-	
-	printf("TEST>> %p\n", HT_add(ht, a));
-	printf("TEST>> %p\n", HT_add(ht, b));
-	printf("TEST>> %p\n", HT_add(ht, c));
-			
-	return 0;
 }

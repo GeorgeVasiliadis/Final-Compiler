@@ -108,7 +108,7 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 18 "final.yacc"
+#line 20 "final.yacc"
 
 	int yint;
 	char ystr[15 + 1];

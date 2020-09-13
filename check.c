@@ -1,7 +1,6 @@
-#include <stdlib.h>
-#include <stdio.h>
 #include "structures.h"
 #include "globals.h"
+#include "logger.h"
 
 extern Hashtable *ht;
 
@@ -70,13 +69,11 @@ Symbol *check_division(Symbol *op1, Symbol *op2){
 
 	if(op2->var_type == TYPE_INT){
 		if(op2->value.i == 0){
-			fprintf(stderr, "Error: Zero-Division.\n");
-			exit(1);
+			semant_err("Zero-Division.");
 		}
 	} else if (op2->var_type == TYPE_FLOAT){
 		if(op2->value.f == 0){
-			fprintf(stderr, "Error: Zero-Division.\n");
-			exit(1);
+			semant_err("Zero-Division.");
 		}
 	}
 
@@ -247,8 +244,7 @@ Symbol *check_assign(Symbol *op1, Symbol *op2){
 	
 	op1 = HT_get(ht,op1->name);
 	if(!op1){
-		fprintf(stderr, "Error: Tried to use ID before declaration.\n");
-		exit(1);
+		semant_err("Tried to use ID before declaration.");
 	}
 	
 	Symbol *p = SMB_init(op1->name);
@@ -282,8 +278,7 @@ void check_declaration(Symbol *dummy, AST_Node *node){
 		if(node->wrapped_symbol){
 			id = HT_add(ht, node->wrapped_symbol);
 			if(!id){
-				fprintf(stderr, "Error: Tried to declare ID multiple times.\n");
-				exit(1);
+				semant_err("Tried to declare ID multiple times.");
 			}
 			id->var_type = var_type;
 			if(var_type == TYPE_INT){
@@ -300,8 +295,7 @@ void check_declaration(Symbol *dummy, AST_Node *node){
 Symbol *check_id_reference(Symbol *op1){
 	Symbol *p = HT_get(ht, op1->name);
 	if(!p){
-		fprintf(stderr, "Error: Tried to use ID before declaration.\n");
-		exit(1);
+		semant_err("Tried to use ID before declaration.");
 	}
 	return p;
 }

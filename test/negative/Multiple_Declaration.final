@@ -1,0 +1,6 @@
+mainclass Multiple_Declaration {
+	public static void main (){
+		// Variable 'a' is declared twice.
+		int a, a;
+	}
+}
