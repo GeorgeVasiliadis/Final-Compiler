@@ -268,7 +268,7 @@ Symbol *check_assign(Symbol *op1, Symbol *op2){
 			p->value.f = op2->value.f;
 		}
 	}
-	return(p);
+	return (p);
 }
 
 void check_declaration(Symbol *dummy, AST_Node *node){
@@ -297,7 +297,7 @@ Symbol *check_id_reference(Symbol *op1){
 	if(!p){
 		semant_err("Tried to use ID before declaration.");
 	}
-	return p;
+	return (p);
 }
 
 void check_println(Symbol *op1){

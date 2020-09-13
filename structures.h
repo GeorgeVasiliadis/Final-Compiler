@@ -5,7 +5,7 @@
 #define MAX_ID_LENGTH 15
 #endif
 
-#define MAX_SYMBOLS_HASHTABLE 40
+#define MAX_CHAINS_HASHTABLE  40
 #define MAX_SYMBOLS_STACK 30
 
 
@@ -17,9 +17,6 @@ typedef struct Symbol{
 	} value;
 	int var_type;
 	int has_value;
-	int comes_from;
-	int is_disposable;
-	int is_lvalue;
 	struct Symbol *nextSymbol;
 	struct Symbol *prevSymbol;
 } Symbol;
@@ -32,7 +29,7 @@ typedef struct AST_Node{
 
 typedef struct Hashtable{
 	int size;
-	Symbol *container[MAX_SYMBOLS_HASHTABLE];
+	Symbol *container[MAX_CHAINS_HASHTABLE ];
 } Hashtable;
 
 typedef struct Stack{
@@ -53,9 +50,5 @@ AST_Node *ASTN_init(int, Symbol*, AST_Node*, AST_Node*, AST_Node*, AST_Node*);
 
 Symbol *SMB_init(char*);
 void SMB_print(Symbol*);
-
-Symbol *ID_init(Symbol *p_symb);
-
-int test(void);
 
 #endif

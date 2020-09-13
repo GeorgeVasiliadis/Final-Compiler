@@ -5,6 +5,8 @@
 #include "structures.h"
 #include "logger.h"
 
+
+
 /*
 //	------------------
 //	+---Hash Table---+
@@ -19,7 +21,7 @@ Hashtable *HT_init(){
 	Hashtable *ht = (Hashtable*) malloc (sizeof(Hashtable));
 	
 	if(ht){
-		for(int i=0; i<MAX_SYMBOLS_HASHTABLE; i++){
+		for(int i=0; i<MAX_CHAINS_HASHTABLE; i++){
 			ht->container[i] = NULL;
 		}
 		ht->size = 0;
@@ -32,7 +34,7 @@ Hashtable *HT_init(){
 
 
 /*
-//	Generates a integer key in [0, (MAX_SYMBOLS_HASHTABLE-1)]
+//	Generates a integer key in [0, (MAX_CHAINS_HASHTABLE-1)]
 //	based on the given string.
 //	When name is Null, 0 is returned!
 */
@@ -46,7 +48,7 @@ int HT_keygen(char *string){
 		}
 	}
 	
-	return sum % MAX_SYMBOLS_HASHTABLE;
+	return sum % MAX_CHAINS_HASHTABLE;
 }
 
 
@@ -56,7 +58,8 @@ int HT_keygen(char *string){
 //	Symbol's name is used for distinction.
 //	A symbol will not be added if another symbol
 //	with the same name exists already and Null will be returned.
-//	Otherwise, a valid non-Null pointer will be returned.
+//	Otherwise, a valid non-Null pointer (pointing to the 
+//	preserved symbol) will be returned.
 */
 Symbol *HT_add(Hashtable *ht, Symbol *p_symb){
 	if(p_symb){
@@ -153,6 +156,7 @@ Symbol *ST_pop(Stack *st){
 }	
 
 
+
 /*
 //	------------------
 //	+----AST Nodes---+
@@ -178,13 +182,15 @@ AST_Node *ASTN_init(int node_type, Symbol *wrapped_symbol, AST_Node *ASTN_p0, AS
 	return p_node;
 }
 
+
+
 /*
 //	------------------
 //	+-----Symbols----+
 //	------------------
 */
 
-//todo garbage collector
+
 /*
 //	Symbol initializer.
 //	Should be called before usage.
@@ -196,47 +202,8 @@ Symbol *SMB_init(char *name){
 	p_symb->var_type = TYPE_NONE;
 	p_symb->value.i = 0;
 	p_symb->value.f = 0;
-	p_symb->is_disposable = 0;
-	p_symb->is_lvalue = 1;
+	p_symb->has_value = FALSE;
 	p_symb->nextSymbol = NULL;
 	p_symb->prevSymbol = NULL;
 	return p_symb;
-}
-
-
-/*
-//	Sets the variable type of first given symbol to the one of
-//	the second one.
-*/
-int SMB_setVarType(Symbol *p_symb, int var_type){
-	if(p_symb->var_type){
-		return 1;
-	}
-		
-	switch(var_type){
-		case INT:
-			p_symb->var_type = var_type;
-			break;
-		case FLOAT:
-			p_symb->var_type = var_type;
-			break;
-	}
-	return 0;
-}
-
-void SMB_discard(Symbol *p_symb){
-	
-}
-
-
-Symbol *ID_init(Symbol *p_symb){
-	Symbol *ptr;
-	
-	ptr = SMB_init("");
-	memcpy(ptr, p_symb, sizeof(Symbol));
-	ptr->is_disposable = 1;
-	ptr->is_lvalue = 1;
-	ptr->nextSymbol = NULL;
-	ptr->prevSymbol = NULL;
-	return ptr;
 }
