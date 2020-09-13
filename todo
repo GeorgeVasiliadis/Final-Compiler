@@ -9,3 +9,5 @@
 8) COMMENTS && DOCUMENTATION
 
 9) COMMENTS in assembly
+
+10) smb->has_value usage in id_reference

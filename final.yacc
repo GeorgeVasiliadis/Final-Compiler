@@ -174,7 +174,6 @@ println_stmt		:	PRINTLN '(' expr ')' ';'
 						{
 							if(DEBUG) yydbg("ASTN_PRINTLN_STMT");
 							smb = ST_pop(st);
-							check_println(smb);
 							$$ = ASTN_init(ASTN_PRINTLN_STMT, smb, $3, NULL, NULL, NULL);
 						}
 			;	
@@ -388,7 +387,7 @@ bool_expr		:	expr EQ_OP expr
 							if(DEBUG) yydbg("ASTN_BOOL_EXPR_EQ");
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
-							smb = check_eq(smb, temp);
+							smb = check_bool(smb, temp);
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_BOOL_EXPR_EQ, smb, $1, $3, NULL, NULL);
 						}
@@ -397,7 +396,7 @@ bool_expr		:	expr EQ_OP expr
 							if(DEBUG) yydbg("ASTN_BOOL_EXPR_LT");
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
-							smb = check_lt(smb, temp);
+							smb = check_bool(smb, temp);
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_BOOL_EXPR_LT, smb, $1, $3, NULL, NULL);
 						}
@@ -406,7 +405,7 @@ bool_expr		:	expr EQ_OP expr
 							if(DEBUG) yydbg("ASTN_BOOL_EXPR_GT");
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
-							smb = check_gt(smb, temp);
+							smb = check_bool(smb, temp);
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_BOOL_EXPR_GT, smb, $1, $3, NULL, NULL);
 						}
@@ -415,7 +414,7 @@ bool_expr		:	expr EQ_OP expr
 							if(DEBUG) yydbg("ASTN_BOOL_EXPR_LE");
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
-							smb = check_le(smb, temp);
+							smb = check_bool(smb, temp);
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_BOOL_EXPR_LE, smb, $1, $3, NULL, NULL);
 						}
@@ -424,7 +423,7 @@ bool_expr		:	expr EQ_OP expr
 							if(DEBUG) yydbg("ASTN_BOOL_EXPR_GE");
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
-							smb = check_ge(smb, temp);
+							smb = check_bool(smb, temp);
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_BOOL_EXPR_GE, smb, $1, $3, NULL, NULL);
 						}
@@ -433,7 +432,7 @@ bool_expr		:	expr EQ_OP expr
 							if(DEBUG) yydbg("ASTN_BOOL_EXPR_NE");
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
-							smb = check_ne(smb, temp);
+							smb = check_bool(smb, temp);
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_BOOL_EXPR_NE, smb, $1, $3, NULL, NULL);
 						}
@@ -446,7 +445,7 @@ r_val			:	r_val '+' term
 							if(DEBUG) yydbg("ASTN_R_VAL_ADD");
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
-							smb = check_add(smb, temp);
+							smb = check_general(smb, temp);
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_R_VAL_ADD, smb, $1, $3, NULL, NULL);
 						
@@ -456,7 +455,7 @@ r_val			:	r_val '+' term
 							if(DEBUG) yydbg("ASTN_R_VAL_SUBSTR");
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
-							smb = check_substr(smb, temp);
+							smb = check_general(smb, temp);
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_R_VAL_SUBSTR, smb, $1, $3, NULL, NULL);
 						}
@@ -476,7 +475,7 @@ term			:	term '*' factor
 							if(DEBUG) yydbg("ASTN_TERM_MULT");
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
-							smb = check_mult(smb, temp);
+							smb = check_general(smb, temp);
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_TERM_MULT, smb, $1, $3, NULL, NULL);
 							
@@ -486,7 +485,7 @@ term			:	term '*' factor
 							if(DEBUG) yydbg("STN_TERM_DIVISION");
 							Symbol *temp = ST_pop(st);
 							smb = ST_pop(st);
-							smb = check_division(smb, temp);
+							smb = check_general(smb, temp);
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_TERM_DIVISION, smb, $1, $3, NULL, NULL);
 						}
@@ -540,6 +539,7 @@ num			:	INT_CONST
 							if(DEBUG) yydbg("ASTN_NUM_INT");
 							smb = SMB_init($1);
 							smb->var_type = TYPE_INT;
+							smb->has_value = TRUE;						
 							smb->value.i = atoi($1);
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_NUM_INT, smb, NULL, NULL, NULL, NULL);
@@ -549,6 +549,7 @@ num			:	INT_CONST
 							if(DEBUG) yydbg("ASTN_NUM_FLOAT");
 							smb = SMB_init($1);
 							smb->var_type = TYPE_FLOAT;
+							smb->has_value = TRUE;
 							smb->value.f = atof($1);
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_NUM_FLOAT, smb, NULL, NULL, NULL, NULL);

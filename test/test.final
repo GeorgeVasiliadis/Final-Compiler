@@ -1,11 +1,8 @@
 mainclass test {
 	public static void main ( ){
-		int i;
-		float a;
-		a = 2;
-		for(i=0; i<59; i=i+1){
-			println(a);
-			a = a/2;
-		}
+		int test;
+test = 0;
+		float test;
+		println(test);
 	}
 }

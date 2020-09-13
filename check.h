@@ -1,15 +1,7 @@
-Symbol *check_add(Symbol*, Symbol*);
-Symbol *check_substr(Symbol*, Symbol*);
+Symbol *check_general(Symbol*, Symbol*);
 Symbol *check_uminus(Symbol*);
-Symbol *check_division(Symbol*, Symbol*);
-Symbol *check_mult(Symbol*, Symbol*);
-Symbol *check_eq(Symbol*, Symbol*);
-Symbol *check_lt(Symbol*, Symbol*);
-Symbol *check_gt(Symbol*, Symbol*);
-Symbol *check_le(Symbol*, Symbol*);
-Symbol *check_ge(Symbol*, Symbol*);
-Symbol *check_ne(Symbol*, Symbol*);
 Symbol *check_assign(Symbol*, Symbol*);
 Symbol *check_id_reference(Symbol *);
+Symbol *check_bool(Symbol*, Symbol*);
 void check_declaration(Symbol*, AST_Node*);
 void check_println(Symbol*);
