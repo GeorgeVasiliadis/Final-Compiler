@@ -1,9 +1,11 @@
 mainclass test {
 	public static void main ( ){
-		float a, b;// because why //not?
-		for(a=10; a>=0; a = a-1){
-			println(1/a);
-			a = 3 + b;
-		} int c;
+		int i;
+		float a;
+		a = 2;
+		for(i=0; i<59; i=i+1){
+			println(a);
+			a = a/2;
+		}
 	}
 }

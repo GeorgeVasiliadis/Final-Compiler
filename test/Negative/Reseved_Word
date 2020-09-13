@@ -1,0 +1,7 @@
+mainclass Reserved_Word {
+	public static void main ( ){
+		// The token "static" is a reserved word, and can't be 
+		// used as ID name.
+		int static;
+	}
+}

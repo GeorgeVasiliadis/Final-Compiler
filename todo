@@ -1,17 +1,11 @@
+1) check check.c
+
 2) !! manual memory leakage test !!
 
 4) Hard-code optimized assembly
 
 5) Optimize code_gen workflow (less (lines-of-code) is better)
 
-6) Tasks check
-
-7) System requirements
-
 8) COMMENTS && DOCUMENTATION
 
 9) COMMENTS in assembly
-
-+------+
-|TODO--|--> check semantics (maybe re-construct)
-+------+
