@@ -1,0 +1,10 @@
+mainclass Zero_Division{
+	public static void main (){
+		int a;
+		// This will force program to halt with zero-division error. 
+		for(a=1; a>=0; a=a-1){
+			println(1/a);
+		}
+		println(111);
+	}
+}

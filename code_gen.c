@@ -9,17 +9,26 @@ Hashtable *ids;
 FILE *fp;
 
 
+// Produce a unique increasing integer as identifier
+// for labels. New ID is being returned on each individual
+// call.
 int get_label_id(void){
 	static int id = 0;
 	return id++;
 }
 
+// Print 'l' number of newlines in mips-assembly file.
 void make_room(int l){
 	for(int i=0; i<l; i++){
 		fputc('\n', fp);
 	}
 }
 
+
+// Traverse given ASTN and look for declaration,
+// assignments, or expressions including valid IDs.
+// For every ID found, declare some space in data section 
+// of mips-assembly file. 
 void declare_constants(AST_Node *root){
 	if(root){
 		Symbol *smb;
@@ -73,6 +82,7 @@ void declare_constants(AST_Node *root){
 	}
 }
 
+// Traverse ASTN and produce respective mips-assembly code.
 void traverse(AST_Node *root){
 	if(root){
 		Symbol *smb, *smb1, *smb2;
@@ -105,33 +115,23 @@ void traverse(AST_Node *root){
 			case ASTN_PROGRAM:
 				fputs("#Declarations\n", fp);
 				fputs(".data\n", fp);
-				
 				make_room(1);
-				
 				fputs("$err_zero: .asciiz \"Error: Tried to divide by zero.\"\n", fp);
 				declare_constants(root);
-
 				make_room(1);
-				
 				fputs("#Actual Instructions\n", fp);
 				fputs(".text\n", fp);
-
 				make_room(1);
-				
 				traverse(root->p_nodelist[0]);
 				fputs("b halt\n", fp);
-
 				make_room(3);
-				
 				fputs("#Print Zero-Division error\n", fp);
 				fputs("err_zero:\n", fp);
 				fputs("li $v0, 4\n", fp);
 				fputs("la $a0, $err_zero\n", fp);
 				fputs("syscall\n", fp);
 				fputs("b halt\n", fp);
-
 				make_room(1);
-				
 				fputs("#Halt\n", fp);
 				fputs("halt:\n", fp);
 				fputs("li $v0, 10\n", fp);
@@ -541,11 +541,6 @@ void traverse(AST_Node *root){
 				var_type1 = smb1->var_type;
 				var_type2 = smb2->var_type;
 				traverse(root->p_nodelist[0]);
-				if(var_type1 == TYPE_INT){
-					fputs("move $t7, $t7\n", fp);
-				} else if (var_type1 == TYPE_FLOAT){
-					fputs("mov.s $f7, $f7\n", fp);
-				}
 				traverse(root->p_nodelist[1]);
 				if(var_type1 == TYPE_INT){
 					if(var_type2 == TYPE_INT){
@@ -577,11 +572,6 @@ void traverse(AST_Node *root){
 				var_type1 = smb1->var_type;
 				var_type2 = smb2->var_type;
 				traverse(root->p_nodelist[0]);
-				if(var_type1 == TYPE_INT){
-					fputs("move $t7, $t7\n", fp);
-				} else if (var_type1 == TYPE_FLOAT){
-					fputs("mov.s $f7, $f7\n", fp);
-				}
 				traverse(root->p_nodelist[1]);
 				if(var_type1 == TYPE_INT){
 					if(var_type2 == TYPE_INT){
@@ -625,11 +615,6 @@ void traverse(AST_Node *root){
 				var_type1 = smb1->var_type;
 				var_type2 = smb2->var_type;
 				traverse(root->p_nodelist[0]);
-				if(var_type1 == TYPE_INT){
-					fputs("move $t8, $t8\n", fp);
-				} else if (var_type1 == TYPE_FLOAT){
-					fputs("mov.s $f8, $f8\n", fp);
-				}
 				traverse(root->p_nodelist[1]);
 				if(var_type1 == TYPE_INT){
 					if(var_type2 == TYPE_INT){
@@ -661,12 +646,6 @@ void traverse(AST_Node *root){
 				var_type1 = smb1->var_type;
 				var_type2 = smb2->var_type;
 				traverse(root->p_nodelist[0]);
-				if(var_type1 == TYPE_INT){
-					fputs("move $t8, $t8\n", fp);
-				} else if (var_type1 == TYPE_FLOAT){
-					fputs("mov.s $f8, $f8\n", fp);
-				}
-				
 				traverse(root->p_nodelist[1]);
 				if(var_type2 == TYPE_INT){
 					fputs("beqz $t9, err_zero\n", fp);
@@ -764,6 +743,9 @@ void traverse(AST_Node *root){
 
 }
 
+// Create a file named after programs main-class name with ".asm"
+// extension. Generate and output mips-assembly code to that file 
+// according to given AST.
 void generate_asm(AST_Node *root){
 	Symbol *smb = root->wrapped_symbol;
 	char *fout = strcat(smb->name, ".asm");
