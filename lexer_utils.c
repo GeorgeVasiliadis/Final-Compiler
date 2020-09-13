@@ -6,6 +6,8 @@ static char *reserved_words[RESERVED_WORDS_COUNT] = {"mainclass", "public", "sta
 
 static int reserved_values[RESERVED_WORDS_COUNT] = {MAINCLASS, PUBLIC, STATIC, VOID, MAIN, INT, FLOAT, FOR, WHILE, IF, ELSE, PRINTLN};
 
+// If the given word is reserved, return the variant identifier of it,
+// or else, return the one common identifier of all user IDs.
 int check_if_reserved(char *word){
 	int i;
 	for(i=0; i<RESERVED_WORDS_COUNT; i++){

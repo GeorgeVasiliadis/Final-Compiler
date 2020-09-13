@@ -1,21 +1,23 @@
-#include "structures.h"
-#include "globals.h"
 #include <string.h>
 #include <stdio.h>
+#include "structures.h"
+#include "globals.h"
+
 
 Hashtable *constants;
 Hashtable *ids;
 FILE *fp;
 
-int get_label_id(){
+
+int get_label_id(void){
 	static int id = 0;
 	return id++;
 }
 
-void make_room(void){
-	fputc('\n', fp);
-	fputc('\n', fp);
-	fputc('\n', fp);
+void make_room(int l){
+	for(int i=0; i<l; i++){
+		
+	}
 }
 
 void declare_constants(AST_Node *root){
@@ -73,13 +75,10 @@ void declare_constants(AST_Node *root){
 
 void traverse(AST_Node *root){
 	if(root){
-		Symbol *smb;
-		Symbol *smb1;
-		Symbol *smb2;
+		Symbol *smb, *smb1, *smb2;
 		int var_type, var_type1, var_type2;
 		int lid, lid1;
 		
-		AST_Node *temp;
 		switch (root->node_type){
 
 			case ASTN_OPEN_STMT_WHILE:
@@ -100,58 +99,55 @@ void traverse(AST_Node *root){
 			case ASTN_OPBOOL_EXPR:
 				traverse(root->p_nodelist[0]);
 				break;
-				
-			case ASTN_OPBOOL_EXPR_EMPTY:
-				fputs("li $t5, 0\n", fp);
-				break;
 
-			case ASTN_STMT_LIST:
-				traverse(root->p_nodelist[0]);
-				traverse(root->p_nodelist[1]);
-				break;
+
 
 			case ASTN_PROGRAM:
 				fputs("#Declarations\n", fp);
 				fputs(".data\n", fp);
 				fputs("$err_zero: .asciiz \"Error: Tried to divide by zero.\"\n", fp);
 				declare_constants(root);
-				make_room();
 				fputs("#Actual Instructions\n", fp);
 				fputs(".text\n", fp);
-				fputc('\n', fp);
-				fputc('\n', fp);
 				traverse(root->p_nodelist[0]);
-				make_room();
 				fputs("b halt\n", fp);
-				fputc('\n', fp);
 				fputs("#Print Zero-Division error\n", fp);
 				fputs("err_zero:\n", fp);
 				fputs("li $v0, 4\n", fp);
 				fputs("la $a0, $err_zero\n", fp);
 				fputs("syscall\n", fp);
 				fputs("b halt\n", fp);
-				make_room();
 				fputs("#Halt\n", fp);
 				fputs("halt:\n", fp);
 				fputs("li $v0, 10\n", fp);
-				fputs("syscall", fp);
+				fputs("syscall\n", fp);
 				break;
+			case ASTN_STMT_LIST:
+				traverse(root->p_nodelist[0]);
+				traverse(root->p_nodelist[1]);
+				break;
+
+
+								
 				
-				
+			case ASTN_OPBOOL_EXPR_EMPTY:
+				fputs("li $t5, 0\n", fp);
+				break;
+
 	
 
 
 
 			case ASTN_OPEN_FOR_STMT:
 			case ASTN_CLOSED_FOR_STMT:
-				traverse(root->p_nodelist[0]);
 				lid = get_label_id();
-				lid1 = get_label_id();		
+				lid1 = get_label_id();	
+				traverse(root->p_nodelist[0]);	
 				fprintf(fp, "$l_%d:\n", lid);
 				traverse(root->p_nodelist[1]);
 				fprintf(fp, "beqz $t5, $l_%d\n", lid1);
 				traverse(root->p_nodelist[3]);
-				traverse(root->p_nodelist[2]);				
+				traverse(root->p_nodelist[2]);	
 				fprintf(fp, "b $l_%d\n", lid);	
 				fprintf(fp, "$l_%d:\n", lid1);
 				break;
@@ -221,7 +217,6 @@ void traverse(AST_Node *root){
 						fprintf(fp, "s.s $f6, $var_%s\n", smb->name);					
 					}
 				}
-				make_room();
 				break;
 
 			case ASTN_PRINTLN_STMT:
@@ -231,19 +226,16 @@ void traverse(AST_Node *root){
 				var_type = smb->var_type;
 				if(var_type == TYPE_INT){
 					fputs("li $v0, 1\n", fp);
-					fputs("move $a0, $t6", fp);
+					fputs("move $a0, $t6\n", fp);
 				} else if (var_type == TYPE_FLOAT){
 					fputs("li $v0, 2\n", fp);
-					fputs("mov.s $f12, $f6", fp);
+					fputs("mov.s $f12, $f6\n", fp);
 				}
-				fputc('\n', fp);
 				fputs("syscall\n", fp);
-				make_room();
 				fputs("#Print newline\n", fp);
 				fputs("li $v0, 11\n", fp);
 				fputs("li $a0, 10\n", fp);
 				fputs("syscall\n", fp);
-				make_room();
 				break;
 				
 
@@ -257,16 +249,14 @@ void traverse(AST_Node *root){
 				var_type2 = smb2->var_type;
 				traverse(root->p_nodelist[0]);
 				if(var_type1 == TYPE_INT){
-					fputs("move $t5, $t6", fp);
+					fputs("move $t5, $t6\n", fp);
 				} else if (var_type1 == TYPE_FLOAT){
-					fputs("mov.s $f5, $f6", fp);
+					fputs("mov.s $f5, $f6\n", fp);
 				}
-				fputc('\n', fp);
 				traverse(root->p_nodelist[1]);
-				fputc('\n', fp);
 				if(var_type1 == TYPE_INT){
 					if(var_type2 == TYPE_INT){
-						fputs("seq $t5, $t5, $t6", fp);
+						fputs("seq $t5, $t5, $t6\n", fp);
 					} else if(var_type2 == TYPE_FLOAT){
 						fputs("mtc1 $t5, $f5\n", fp);
 						fputs("cvt.s.w $f5, $f5\n", fp);
@@ -286,8 +276,7 @@ void traverse(AST_Node *root){
 						fputs("li $t5, 1\n", fp);
 						fputs("movf $t5, $zero\n", fp);
 					}
-				}
-				fputc('\n', fp);			
+				}			
 				break;
 	
 
@@ -300,16 +289,14 @@ void traverse(AST_Node *root){
 				var_type2 = smb2->var_type;
 				traverse(root->p_nodelist[0]);
 				if(var_type1 == TYPE_INT){
-					fputs("move $t5, $t6", fp);
+					fputs("move $t5, $t6\n", fp);
 				} else if (var_type1 == TYPE_FLOAT){
-					fputs("mov.s $f5, $f6", fp);
+					fputs("mov.s $f5, $f6\n", fp);
 				}
-				fputc('\n', fp);
 				traverse(root->p_nodelist[1]);
-				fputc('\n', fp);
 				if(var_type1 == TYPE_INT){
 					if(var_type2 == TYPE_INT){
-						fputs("slt $t5, $t5, $t6", fp);
+						fputs("slt $t5, $t5, $t6\n", fp);
 					} else if(var_type2 == TYPE_FLOAT){
 						fputs("mtc1 $t5, $f5\n", fp);
 						fputs("cvt.s.w $f5, $f5\n", fp);
@@ -329,8 +316,7 @@ void traverse(AST_Node *root){
 						fputs("li $t5, 1\n", fp);
 						fputs("movf $t5, $zero\n", fp);
 					}
-				}
-				fputc('\n', fp);			
+				}		
 				break;
 
 			case ASTN_BOOL_EXPR_LE:
@@ -342,16 +328,14 @@ void traverse(AST_Node *root){
 				var_type2 = smb2->var_type;
 				traverse(root->p_nodelist[0]);
 				if(var_type1 == TYPE_INT){
-					fputs("move $t5, $t6", fp);
+					fputs("move $t5, $t6\n", fp);
 				} else if (var_type1 == TYPE_FLOAT){
-					fputs("mov.s $f5, $f6", fp);
+					fputs("mov.s $f5, $f6\n", fp);
 				}
-				fputc('\n', fp);
 				traverse(root->p_nodelist[1]);
-				fputc('\n', fp);
 				if(var_type1 == TYPE_INT){
 					if(var_type2 == TYPE_INT){
-						fputs("sle $t5, $t5, $t6", fp);
+						fputs("sle $t5, $t5, $t6\n", fp);
 					} else if(var_type2 == TYPE_FLOAT){
 						fputs("mtc1 $t5, $f5\n", fp);
 						fputs("cvt.s.w $f5, $f5\n", fp);
@@ -371,8 +355,7 @@ void traverse(AST_Node *root){
 						fputs("li $t5, 1\n", fp);
 						fputs("movf $t5, $zero\n", fp);
 					}
-				}
-				fputc('\n', fp);			
+				}		
 				break;
 	
 		
@@ -385,16 +368,14 @@ void traverse(AST_Node *root){
 				var_type2 = smb2->var_type;
 				traverse(root->p_nodelist[0]);
 				if(var_type1 == TYPE_INT){
-					fputs("move $t5, $t6", fp);
+					fputs("move $t5, $t6\n", fp);
 				} else if (var_type1 == TYPE_FLOAT){
-					fputs("mov.s $f5, $f6", fp);
+					fputs("mov.s $f5, $f6\n", fp);
 				}
-				fputc('\n', fp);
 				traverse(root->p_nodelist[1]);
-				fputc('\n', fp);
 				if(var_type1 == TYPE_INT){
 					if(var_type2 == TYPE_INT){
-						fputs("sgt $t5, $t5, $t6", fp);
+						fputs("sgt $t5, $t5, $t6\n", fp);
 					} else if(var_type2 == TYPE_FLOAT){
 						fputs("mtc1 $t5, $f5\n", fp);
 						fputs("cvt.s.w $f5, $f5\n", fp);
@@ -417,8 +398,7 @@ void traverse(AST_Node *root){
 						fputs("li $t0, 1\n", fp);
 						fputs("movf $t5, $t0\n", fp);
 					}
-				}
-				fputc('\n', fp);			
+				}			
 				break;
 
 			case ASTN_BOOL_EXPR_GE:
@@ -430,16 +410,14 @@ void traverse(AST_Node *root){
 				var_type2 = smb2->var_type;
 				traverse(root->p_nodelist[0]);
 				if(var_type1 == TYPE_INT){
-					fputs("move $t5, $t6", fp);
+					fputs("move $t5, $t6\n", fp);
 				} else if (var_type1 == TYPE_FLOAT){
-					fputs("mov.s $f5, $f6", fp);
+					fputs("mov.s $f5, $f6\n", fp);
 				}
-				fputc('\n', fp);
 				traverse(root->p_nodelist[1]);
-				fputc('\n', fp);
 				if(var_type1 == TYPE_INT){
 					if(var_type2 == TYPE_INT){
-						fputs("sge $t5, $t5, $t6", fp);
+						fputs("sge $t5, $t5, $t6\n", fp);
 					} else if(var_type2 == TYPE_FLOAT){
 						fputs("mtc1 $t5, $f5\n", fp);
 						fputs("cvt.s.w $f5, $f5\n", fp);
@@ -462,8 +440,7 @@ void traverse(AST_Node *root){
 						fputs("li $t0, 1\n", fp);
 						fputs("movf $t5, $t0\n", fp);
 					}
-				}
-				fputc('\n', fp);			
+				}		
 				break;
 
 			case ASTN_BOOL_EXPR_NE:
@@ -475,16 +452,14 @@ void traverse(AST_Node *root){
 				var_type2 = smb2->var_type;
 				traverse(root->p_nodelist[0]);
 				if(var_type1 == TYPE_INT){
-					fputs("move $t5, $t6", fp);
+					fputs("move $t5, $t6\n", fp);
 				} else if (var_type1 == TYPE_FLOAT){
-					fputs("mov.s $f5, $f6", fp);
+					fputs("mov.s $f5, $f6\n", fp);
 				}
-				fputc('\n', fp);
 				traverse(root->p_nodelist[1]);
-				fputc('\n', fp);
 				if(var_type1 == TYPE_INT){
 					if(var_type2 == TYPE_INT){
-						fputs("sne $t5, $t5, $t6", fp);
+						fputs("sne $t5, $t5, $t6\n", fp);
 					} else if(var_type2 == TYPE_FLOAT){
 						fputs("mtc1 $t5, $f5\n", fp);
 						fputs("cvt.s.w $f5, $f5\n", fp);
@@ -507,8 +482,7 @@ void traverse(AST_Node *root){
 						fputs("li $t0, 1\n", fp);
 						fputs("movf $t5, $t0\n", fp);
 					}
-				}
-				fputc('\n', fp);			
+				}			
 				break;
 
 
@@ -533,16 +507,14 @@ void traverse(AST_Node *root){
 				var_type2 = smb2->var_type;
 				traverse(root->p_nodelist[0]);
 				if(var_type1 == TYPE_INT){
-					fputs("move $t7, $t7", fp);
+					fputs("move $t7, $t7\n", fp);
 				} else if (var_type1 == TYPE_FLOAT){
-					fputs("mov.s $f7, $f7", fp);
+					fputs("mov.s $f7, $f7\n", fp);
 				}
-				fputc('\n', fp);
 				traverse(root->p_nodelist[1]);
-				fputc('\n', fp);
 				if(var_type1 == TYPE_INT){
 					if(var_type2 == TYPE_INT){
-						fputs("sub $t7, $t7, $t8", fp);
+						fputs("sub $t7, $t7, $t8\n", fp);
 					} else if(var_type2 == TYPE_FLOAT){
 						fputs("mtc1 $t7, $f7\n", fp);
 						fputs("cvt.s.w $f7, $f7\n", fp);
@@ -557,7 +529,6 @@ void traverse(AST_Node *root){
 						fputs("sub.s $f7, $f7, $f8\n", fp);
 					}
 				}
-				fputc('\n', fp);
 				break;
 	
 	
@@ -571,16 +542,14 @@ void traverse(AST_Node *root){
 				var_type2 = smb2->var_type;
 				traverse(root->p_nodelist[0]);
 				if(var_type1 == TYPE_INT){
-					fputs("move $t7, $t7", fp);
+					fputs("move $t7, $t7\n", fp);
 				} else if (var_type1 == TYPE_FLOAT){
-					fputs("mov.s $f7, $f7", fp);
+					fputs("mov.s $f7, $f7\n", fp);
 				}
-				fputc('\n', fp);
 				traverse(root->p_nodelist[1]);
-				fputc('\n', fp);
 				if(var_type1 == TYPE_INT){
 					if(var_type2 == TYPE_INT){
-						fputs("add $t7, $t7, $t8", fp);
+						fputs("add $t7, $t7, $t8\n", fp);
 					} else if(var_type2 == TYPE_FLOAT){
 						fputs("mtc1 $t7, $f7\n", fp);
 						fputs("cvt.s.w $f7, $f7\n", fp);
@@ -595,23 +564,19 @@ void traverse(AST_Node *root){
 						fputs("add.s $f7, $f7, $f8\n", fp);
 					}
 				}
-				fputc('\n', fp);
 				break;
 				
 				
 	
 			case ASTN_R_VAL_TERM:
 				traverse(root->p_nodelist[0]);
-	
 				smb = root->wrapped_symbol;
 				var_type = smb->var_type;
 				if(var_type == TYPE_INT){
-					fputs("move $t7, $t8", fp);
+					fputs("move $t7, $t8\n", fp);
 				} else if (var_type == TYPE_FLOAT){
-					fputs("mov.s $f7, $f8", fp);
+					fputs("mov.s $f7, $f8\n", fp);
 				}
-				fputc('\n', fp);
-	
 				break;
 			
 	
@@ -624,16 +589,14 @@ void traverse(AST_Node *root){
 				var_type2 = smb2->var_type;
 				traverse(root->p_nodelist[0]);
 				if(var_type1 == TYPE_INT){
-					fputs("move $t8, $t8", fp);
+					fputs("move $t8, $t8\n", fp);
 				} else if (var_type1 == TYPE_FLOAT){
-					fputs("mov.s $f8, $f8", fp);
+					fputs("mov.s $f8, $f8\n", fp);
 				}
-				fputc('\n', fp);
 				traverse(root->p_nodelist[1]);
-				fputc('\n', fp);
 				if(var_type1 == TYPE_INT){
 					if(var_type2 == TYPE_INT){
-						fputs("mul $t8, $t8, $t9", fp);
+						fputs("mul $t8, $t8, $t9\n", fp);
 					} else if(var_type2 == TYPE_FLOAT){
 						fputs("mtc1 $t8, $f8\n", fp);
 						fputs("cvt.s.w $f8, $f8\n", fp);
@@ -648,7 +611,6 @@ void traverse(AST_Node *root){
 						fputs("mul.s $f8, $f8, $f9\n", fp);
 					}
 				}
-				fputc('\n', fp);
 				break;
 	
 	
@@ -662,11 +624,11 @@ void traverse(AST_Node *root){
 				var_type2 = smb2->var_type;
 				traverse(root->p_nodelist[0]);
 				if(var_type1 == TYPE_INT){
-					fputs("move $t8, $t8", fp);
+					fputs("move $t8, $t8\n", fp);
 				} else if (var_type1 == TYPE_FLOAT){
-					fputs("mov.s $f8, $f8", fp);
+					fputs("mov.s $f8, $f8\n", fp);
 				}
-				fputc('\n', fp);
+				
 				traverse(root->p_nodelist[1]);
 				if(var_type2 == TYPE_INT){
 					fputs("beqz $t9, err_zero\n", fp);
@@ -675,10 +637,10 @@ void traverse(AST_Node *root){
 					fputs("c.eq.s $f9, $f0\n", fp);
 					fputs("bc1t err_zero\n", fp);
 				}
-				fputc('\n', fp);
+				
 				if(var_type1 == TYPE_INT){
 					if(var_type2 == TYPE_INT){
-						fputs("div $t8, $t8, $t9", fp);
+						fputs("div $t8, $t8, $t9\n", fp);
 					} else if(var_type2 == TYPE_FLOAT){
 						fputs("mtc1 $t8, $f8\n", fp);
 						fputs("cvt.s.w $f8, $f8\n", fp);
@@ -693,7 +655,6 @@ void traverse(AST_Node *root){
 						fputs("div.s $f8, $f8, $f9\n", fp);
 					}
 				}
-				fputc('\n', fp);
 				break;
 			
 	
@@ -702,12 +663,10 @@ void traverse(AST_Node *root){
 				smb = root->wrapped_symbol;
 				var_type = smb->var_type;
 				if(var_type == TYPE_INT){
-					fputs("move $t8, $t9", fp);
+					fputs("move $t8, $t9\n", fp);
 				} else if (var_type == TYPE_FLOAT){
-					fputs("mov.s $f8, $f9", fp);
+					fputs("mov.s $f8, $f9\n", fp);
 				}
-				fputc('\n', fp);
-	
 				break;
 
 
@@ -720,7 +679,6 @@ void traverse(AST_Node *root){
 				} else if (var_type == TYPE_FLOAT){
 					fputs("mov.s $f9, $f6\n", fp);
 				}
-				fputc('\n', fp);
 				break;	
 
 
@@ -733,7 +691,6 @@ void traverse(AST_Node *root){
 				} else if (var_type == TYPE_FLOAT){
 					fputs("neg.s $f9, $f9\n", fp);
 				}
-				fputc('\n', fp);
 				break;				
 			
 			
@@ -741,11 +698,10 @@ void traverse(AST_Node *root){
 				smb = root->wrapped_symbol;
 				var_type = smb->var_type;
 				if(var_type == TYPE_INT){
-					fprintf(fp, "lw $t9, $var_%s", smb->name);
+					fprintf(fp, "lw $t9, $var_%s\n", smb->name);
 				} else if (var_type == TYPE_FLOAT){
-					fprintf(fp, "l.s $f9, $var_%s", smb->name);
+					fprintf(fp, "l.s $f9, $var_%s\n", smb->name);
 				}
-				fputc('\n', fp);
 				break;
 	
 			case ASTN_FACTOR_NUM:
@@ -757,21 +713,20 @@ void traverse(AST_Node *root){
 					fputs("l.s $f9, ", fp);
 				}
 				traverse(root->p_nodelist[0]);
-				fputc('\n', fp);
 				break;
 				
 	
 			case ASTN_NUM_INT:
 			case ASTN_NUM_FLOAT:
 					smb = root->wrapped_symbol;
-					fprintf(fp, "$t_%s", smb->name);
+					fprintf(fp, "$t_%s\n", smb->name);
 				break;
 		}
 	}
 
 }
 
-void generate_code(AST_Node *root){
+void generate_asm(AST_Node *root){
 	Symbol *smb = root->wrapped_symbol;
 	char *fout = strcat(smb->name, ".asm");
 	fp = fopen(fout, "w");

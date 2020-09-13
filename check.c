@@ -4,6 +4,10 @@
 
 extern Hashtable *ht;
 
+
+// Applied in all arithmetic operators.
+// Produces an intermediate symbol made up from the two
+// input symbols, which contains the variable type. 
 Symbol *check_general(Symbol *op1, Symbol *op2){
 	Symbol *p = SMB_init("");
 	p->has_value = TRUE;
@@ -23,6 +27,9 @@ Symbol *check_general(Symbol *op1, Symbol *op2){
 	return p;
 }
 
+// Applied in all boolean operators.
+// Produces an intermediate symbol made up from the two
+// input symbols, which is integer.
 Symbol *check_bool(Symbol *op1, Symbol *op2){
 	Symbol *p = SMB_init("");
 	p->has_value = TRUE;
@@ -40,6 +47,8 @@ Symbol *check_uminus(Symbol *op1){
 }
 
 
+// Ensures that the l-value of the the assignment is an
+// existing (declared) ID.
 Symbol *check_assign(Symbol *op1, Symbol *op2){
 	Symbol *p = HT_get(ht,op1->name);
 	if(!p){
@@ -49,6 +58,8 @@ Symbol *check_assign(Symbol *op1, Symbol *op2){
 	return (p);
 }
 
+
+// Ensures that the to-declare ID is not already declared.
 void check_declaration(Symbol *dummy, AST_Node *node){
 	int var_type = dummy->var_type;
 	Symbol *id;
@@ -65,7 +76,7 @@ void check_declaration(Symbol *dummy, AST_Node *node){
 	}
 }
 
-
+// Ensures that the referenced symbol is initialized properly.
 Symbol *check_id_reference(Symbol *op1){
 	Symbol *p = HT_get(ht, op1->name);
 	if(!p){

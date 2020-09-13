@@ -12,7 +12,7 @@ int main(){
 	st = ST_init();
 	
 	yyparse();
-	generate_code(root);
+	generate_asm(root);
 	fin_log("Success!");
 	return 0;
 }
