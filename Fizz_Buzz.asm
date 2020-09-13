@@ -1,5 +1,6 @@
 #Declarations
 .data
+
 $err_zero: .asciiz "Error: Tried to divide by zero."
 $var_fizz: .word 0
 $t_333: .word 333
@@ -14,20 +15,42 @@ $t_100: .word 100
 $t_0: .word 0
 $t_3: .word 3
 $t_5: .word 5
+
 #Actual Instructions
 .text
+
+
+
+
+
+
 #Assign
 lw $t9, $t_333
 move $t8, $t9
 move $t7, $t8
 move $t6, $t7
 sw $t6, $var_fizz
+
+
+
+
+
 #Assign
 lw $t9, $t_555
 move $t8, $t9
 move $t7, $t8
 move $t6, $t7
 sw $t6, $var_buzz
+
+
+
+
+
+
+
+
+
+
 #Assign
 #Assign
 #Assign
@@ -38,12 +61,29 @@ move $t6, $t7
 sw $t6, $var_c5
 sw $t6, $var_c3
 sw $t6, $var_i
+
+
+
+
+
+
+
+
+
+
 #Assign
 lw $t9, $t_100
 move $t8, $t9
 move $t7, $t8
 move $t6, $t7
 sw $t6, $var_N
+
+
+
+
+
+#For Loop
+#Initial Statements of For Loop
 $l_0:
 lw $t9, $var_i
 move $t8, $t9
@@ -56,6 +96,9 @@ move $t7, $t8
 move $t6, $t7
 sle $t5, $t5, $t6
 beqz $t5, $l_1
+#Contents of For Loop
+#If Loop
+#Condition of If Loop
 lw $t9, $var_c3
 move $t8, $t9
 move $t7, $t8
@@ -67,7 +110,8 @@ move $t7, $t8
 move $t6, $t7
 seq $t5, $t5, $t6
 beqz $t5, $l_2
-#Print
+#Contents of If Loop
+#Print Line
 lw $t9, $var_fizz
 move $t8, $t9
 move $t7, $t8
@@ -75,11 +119,18 @@ move $t6, $t7
 li $v0, 1
 move $a0, $t6
 syscall
-#Print newline
+#Print Newline Character
 li $v0, 11
 li $a0, 10
 syscall
 $l_2:
+
+
+
+
+
+#If Loop
+#Condition of If Loop
 lw $t9, $var_c5
 move $t8, $t9
 move $t7, $t8
@@ -91,7 +142,8 @@ move $t7, $t8
 move $t6, $t7
 seq $t5, $t5, $t6
 beqz $t5, $l_3
-#Print
+#Contents of If Loop
+#Print Line
 lw $t9, $var_buzz
 move $t8, $t9
 move $t7, $t8
@@ -99,11 +151,18 @@ move $t6, $t7
 li $v0, 1
 move $a0, $t6
 syscall
-#Print newline
+#Print Newline Character
 li $v0, 11
 li $a0, 10
 syscall
 $l_3:
+
+
+
+
+
+#If Loop
+#Condition of If Loop
 lw $t9, $var_c3
 move $t8, $t9
 move $t7, $t8
@@ -115,6 +174,9 @@ move $t7, $t8
 move $t6, $t7
 sne $t5, $t5, $t6
 beqz $t5, $l_4
+#Contents of If Loop
+#If Loop
+#Condition of If Loop
 lw $t9, $var_c5
 move $t8, $t9
 move $t7, $t8
@@ -126,7 +188,8 @@ move $t7, $t8
 move $t6, $t7
 sne $t5, $t5, $t6
 beqz $t5, $l_5
-#Print
+#Contents of If Loop
+#Print Line
 lw $t9, $var_i
 move $t8, $t9
 move $t7, $t8
@@ -134,13 +197,19 @@ move $t6, $t7
 li $v0, 1
 move $a0, $t6
 syscall
-#Print newline
+#Print Newline Character
 li $v0, 11
 li $a0, 10
 syscall
 $l_5:
 $l_4:
+
+
+
+
+
 #Assign
+#Addition
 lw $t9, $var_c3
 move $t8, $t9
 move $t7, $t8
@@ -150,7 +219,13 @@ move $t8, $t9
 add $t7, $t7, $t8
 move $t6, $t7
 sw $t6, $var_c3
+
+
+
+
+
 #Assign
+#Addition
 lw $t9, $var_c5
 move $t8, $t9
 move $t7, $t8
@@ -160,6 +235,13 @@ move $t8, $t9
 add $t7, $t7, $t8
 move $t6, $t7
 sw $t6, $var_c5
+
+
+
+
+
+#If Loop
+#Condition of If Loop
 lw $t9, $var_c3
 move $t8, $t9
 move $t7, $t8
@@ -171,6 +253,7 @@ move $t7, $t8
 move $t6, $t7
 seq $t5, $t5, $t6
 beqz $t5, $l_6
+#Contents of If Loop
 #Assign
 lw $t9, $t_0
 move $t8, $t9
@@ -178,6 +261,13 @@ move $t7, $t8
 move $t6, $t7
 sw $t6, $var_c3
 $l_6:
+
+
+
+
+
+#If Loop
+#Condition of If Loop
 lw $t9, $var_c5
 move $t8, $t9
 move $t7, $t8
@@ -189,6 +279,7 @@ move $t7, $t8
 move $t6, $t7
 seq $t5, $t5, $t6
 beqz $t5, $l_7
+#Contents of If Loop
 #Assign
 lw $t9, $t_0
 move $t8, $t9
@@ -196,7 +287,14 @@ move $t7, $t8
 move $t6, $t7
 sw $t6, $var_c5
 $l_7:
+
+
+
+
+
+#Closing Statements of For Loop
 #Assign
+#Addition
 lw $t9, $var_i
 move $t8, $t9
 move $t7, $t8
@@ -208,13 +306,22 @@ move $t6, $t7
 sw $t6, $var_i
 b $l_0
 $l_1:
+
+
+
+
+
 b halt
+
+
+
 #Print Zero-Division error
 err_zero:
 li $v0, 4
 la $a0, $err_zero
 syscall
 b halt
+
 #Halt
 halt:
 li $v0, 10

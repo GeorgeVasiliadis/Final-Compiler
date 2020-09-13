@@ -16,7 +16,7 @@ int get_label_id(void){
 
 void make_room(int l){
 	for(int i=0; i<l; i++){
-		
+		fputc('\n', fp);
 	}
 }
 
@@ -105,32 +105,52 @@ void traverse(AST_Node *root){
 			case ASTN_PROGRAM:
 				fputs("#Declarations\n", fp);
 				fputs(".data\n", fp);
+				
+				make_room(1);
+				
 				fputs("$err_zero: .asciiz \"Error: Tried to divide by zero.\"\n", fp);
 				declare_constants(root);
+
+				make_room(1);
+				
 				fputs("#Actual Instructions\n", fp);
 				fputs(".text\n", fp);
+
+				make_room(1);
+				
 				traverse(root->p_nodelist[0]);
 				fputs("b halt\n", fp);
+
+				make_room(3);
+				
 				fputs("#Print Zero-Division error\n", fp);
 				fputs("err_zero:\n", fp);
 				fputs("li $v0, 4\n", fp);
 				fputs("la $a0, $err_zero\n", fp);
 				fputs("syscall\n", fp);
 				fputs("b halt\n", fp);
+
+				make_room(1);
+				
 				fputs("#Halt\n", fp);
 				fputs("halt:\n", fp);
 				fputs("li $v0, 10\n", fp);
 				fputs("syscall\n", fp);
 				break;
+
+
+
 			case ASTN_STMT_LIST:
 				traverse(root->p_nodelist[0]);
 				traverse(root->p_nodelist[1]);
+				make_room(5);
 				break;
 
 
 								
 				
 			case ASTN_OPBOOL_EXPR_EMPTY:
+				fputs("#Empty Bool Expression\n", fp);
 				fputs("li $t5, 0\n", fp);
 				break;
 
@@ -140,13 +160,17 @@ void traverse(AST_Node *root){
 
 			case ASTN_OPEN_FOR_STMT:
 			case ASTN_CLOSED_FOR_STMT:
+				fputs("#For Loop\n", fp);
 				lid = get_label_id();
-				lid1 = get_label_id();	
+				lid1 = get_label_id();
+				fputs("#Initial Statements of For Loop\n", fp);
 				traverse(root->p_nodelist[0]);	
 				fprintf(fp, "$l_%d:\n", lid);
 				traverse(root->p_nodelist[1]);
 				fprintf(fp, "beqz $t5, $l_%d\n", lid1);
+				fputs("#Contents of For Loop\n", fp);
 				traverse(root->p_nodelist[3]);
+				fputs("#Closing Statements of For Loop\n", fp);
 				traverse(root->p_nodelist[2]);	
 				fprintf(fp, "b $l_%d\n", lid);	
 				fprintf(fp, "$l_%d:\n", lid1);
@@ -156,11 +180,14 @@ void traverse(AST_Node *root){
 				
 			case ASTN_OPEN_WHILE_STMT:
 			case ASTN_CLOSED_WHILE_STMT:
+				fputs("#While Loop\n", fp);
 				lid = get_label_id();
 				lid1 = get_label_id();				
 				fprintf(fp, "$l_%d:\n", lid);
+				fputs("#Condition of While Loop\n", fp);
 				traverse(root->p_nodelist[0]);	
 				fprintf(fp, "beqz $t5, $l_%d\n", lid1);
+				fputs("#Contents of While Loop\n", fp);
 				traverse(root->p_nodelist[1]);					
 				fprintf(fp, "b $l_%d\n", lid);			
 				fprintf(fp, "$l_%d:\n", lid1);
@@ -170,22 +197,29 @@ void traverse(AST_Node *root){
 				
 
 			case ASTN_OPEN_IF_STMT:
+				fputs("#If Loop\n", fp);
+				fputs("#Condition of If Loop\n", fp);
 				traverse(root->p_nodelist[0]);
 				lid = get_label_id();
 				fprintf(fp, "beqz $t5, $l_%d\n", lid);
+				fputs("#Contents of If Loop\n", fp);
 				traverse(root->p_nodelist[1]);								
 				fprintf(fp, "$l_%d:\n", lid);
 				break;
 			
 			case ASTN_OPEN_IF_ELSE_STMT:
 			case ASTN_CLOSED_IF_STMT:
+				fputs("#If Loop\n", fp);
+				fputs("#Condition of If Loop\n", fp);
 				traverse(root->p_nodelist[0]);
 				lid = get_label_id();
 				lid1 = get_label_id();
 				fprintf(fp, "beqz $t5, $l_%d\n", lid);
+				fputs("#Contents of If Loop\n", fp);
 				traverse(root->p_nodelist[1]);				
 				fprintf(fp, "b $l_%d\n", lid1);			
 				fprintf(fp, "$l_%d:\n", lid);
+				fputs("#Contents of Else part from If Loop\n", fp);
 				traverse(root->p_nodelist[2]);								
 				fprintf(fp, "$l_%d:\n", lid1);
 				break;
@@ -220,7 +254,7 @@ void traverse(AST_Node *root){
 				break;
 
 			case ASTN_PRINTLN_STMT:
-				fputs("#Print\n", fp);
+				fputs("#Print Line\n", fp);
 				traverse(root->p_nodelist[0]);
 				smb = root->wrapped_symbol;
 				var_type = smb->var_type;
@@ -232,7 +266,7 @@ void traverse(AST_Node *root){
 					fputs("mov.s $f12, $f6\n", fp);
 				}
 				fputs("syscall\n", fp);
-				fputs("#Print newline\n", fp);
+				fputs("#Print Newline Character\n", fp);
 				fputs("li $v0, 11\n", fp);
 				fputs("li $a0, 10\n", fp);
 				fputs("syscall\n", fp);
@@ -499,6 +533,7 @@ void traverse(AST_Node *root){
 	
 	
 			case ASTN_R_VAL_SUBSTR:
+				fputs("#Substraction\n", fp);
 				smb = root->wrapped_symbol;
 				smb1 = root->p_nodelist[0]->wrapped_symbol;
 				smb2 = root->p_nodelist[1]->wrapped_symbol;
@@ -534,6 +569,7 @@ void traverse(AST_Node *root){
 	
 	
 			case ASTN_R_VAL_ADD:
+				fputs("#Addition\n", fp);
 				smb = root->wrapped_symbol;
 				smb1 = root->p_nodelist[0]->wrapped_symbol;
 				smb2 = root->p_nodelist[1]->wrapped_symbol;
@@ -581,6 +617,7 @@ void traverse(AST_Node *root){
 			
 	
 			case ASTN_TERM_MULT:
+				fputs("#Multiplication\n", fp);
 				smb = root->wrapped_symbol;
 				smb1 = root->p_nodelist[0]->wrapped_symbol;
 				smb2 = root->p_nodelist[1]->wrapped_symbol;
@@ -616,6 +653,7 @@ void traverse(AST_Node *root){
 	
 	
 			case ASTN_TERM_DIVISION:
+				fputs("#Division\n", fp);
 				smb = root->wrapped_symbol;
 				smb1 = root->p_nodelist[0]->wrapped_symbol;
 				smb2 = root->p_nodelist[1]->wrapped_symbol;
