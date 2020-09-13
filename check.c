@@ -245,6 +245,7 @@ Symbol *check_ne(Symbol *op1, Symbol *op2){
 
 Symbol *check_assign(Symbol *op1, Symbol *op2){
 	
+	op1 = HT_get(ht,op1->name);
 	if(!op1){
 		fprintf(stderr, "Error: Tried to use ID before declaration.\n");
 		exit(1);
@@ -279,24 +280,32 @@ void check_declaration(Symbol *dummy, AST_Node *node){
 	Symbol *id;
 	while(node){
 		if(node->wrapped_symbol){
-			id = HT_get(ht, node->wrapped_symbol->name);
+			id = HT_add(ht, node->wrapped_symbol);
+			if(!id){
+				fprintf(stderr, "Error: Tried to declare ID multiple times.\n");
+				exit(1);
+			}
 			id->var_type = var_type;
 			if(var_type == TYPE_INT){
-				id->value.i = 555;
+				id->value.i = 0;
 			} else if (var_type == TYPE_FLOAT){
-				id->value.f = 777;
+				id->value.f = 0;
 			}
 		}
 		node = node->p_nodelist[0];
 	}
 }
 
-void check_println(Symbol *op1){
-	//SMB_print(op1);
-	printf("Printed Expression: ");
-	if(op1->var_type == TYPE_INT){
-		printf("%i\n", op1->value.i);
-	}else if (op1->var_type == TYPE_FLOAT){
-		printf("%g\n", op1->value.f);
+
+Symbol *check_id_reference(Symbol *op1){
+	Symbol *p = HT_get(ht, op1->name);
+	if(!p){
+		fprintf(stderr, "Error: Tried to use ID before declaration.\n");
+		exit(1);
 	}
+	return p;
+}
+
+void check_println(Symbol *op1){
+
 }

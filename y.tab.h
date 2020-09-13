@@ -108,14 +108,13 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 16 "final.yacc"
+#line 18 "final.yacc"
 
 	int yint;
-	float yfloat;
 	char ystr[15 + 1];
 	struct AST_Node *p_astn;
 
-#line 119 "y.tab.h"
+#line 118 "y.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

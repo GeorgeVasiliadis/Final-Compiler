@@ -5,20 +5,25 @@
 #include "structures.h"
 #include "check.h"
 
-Hashtable *ht;
-Stack *st;
-AST_Node *root;
-AST_Node *p, *p1, *p2, *p3, *p4;
-Symbol *smb;
+extern Stack *st;
+extern AST_Node *root;
 
+Symbol *smb;
 %}
+
+
+
+
 
 %union{
 	int yint;
-	float yfloat;
 	char ystr[15 + 1];
 	struct AST_Node *p_astn;
 }
+
+
+
+
 
 %token <yint> MAINCLASS PUBLIC STATIC VOID MAIN INT FLOAT FOR WHILE IF ELSE PRINTLN
 
@@ -39,21 +44,28 @@ Symbol *smb;
 
 %start program
 
-%%
 
+
+
+
+%%
 program			:	MAINCLASS ID '{' PUBLIC STATIC VOID MAIN '(' ')' comp_stmt '}'
 						{
 							smb = SMB_init($2);
 							root = ASTN_init(ASTN_PROGRAM, smb, $10, NULL, NULL, NULL);
 						}
 			;
+
+
 							
 comp_stmt		:	'{' stmt_list '}'
 						{
 							$$ = ASTN_init(ASTN_COMP_STMT, NULL, $2, NULL, NULL, NULL);
 						}
 			;
-							
+			
+
+				
 stmt_list		:	stmt_list stmt
 						{
 							$$ = ASTN_init(ASTN_STMT_LIST, NULL, $1, $2, NULL, NULL);	
@@ -63,6 +75,8 @@ stmt_list		:	stmt_list stmt
 							$$ = ASTN_init(ASTN_STMT_LIST_EMPTY, NULL, NULL, NULL, NULL, NULL);
 						}	
 			;
+
+
 					
 stmt			:	open_stmt
 						{
@@ -73,6 +87,8 @@ stmt			:	open_stmt
 							$$ = ASTN_init(ASTN_STMT_CLOSED, NULL, $1, NULL, NULL, NULL);
 						}
 			;
+
+
 
 open_stmt		:	open_for_stmt
 						{
@@ -87,6 +103,8 @@ open_stmt		:	open_for_stmt
 							$$ = ASTN_init(ASTN_OPEN_STMT_IF, NULL, $1, NULL, NULL, NULL);
 						}
 			;
+
+
 
 closed_stmt		:	closed_for_stmt
 						{
@@ -105,12 +123,13 @@ closed_stmt		:	closed_for_stmt
 							$$ = ASTN_init(ASTN_CLOSED_STMT_SIMPLE, NULL, $1, NULL, NULL, NULL);
 						}
 			;
+
+
 	
 simple_stmt		:	assign_stmt
 						{
 							$$ = ASTN_init(ASTN_SIMPLE_STMT_ASSIGN, NULL, $1, NULL, NULL, NULL);
 						}
-			
 			|	 comp_stmt
 						{
 							$$ = ASTN_init(ASTN_COMP_STMT, NULL, $1, NULL, NULL, NULL);
@@ -123,22 +142,24 @@ simple_stmt		:	assign_stmt
 						{
 							$$ = ASTN_init(ASTN_SIMPLE_STMT_NULL, NULL, $1, NULL, NULL, NULL);
 						}
-
 			|	println_stmt
 						{
 							$$ = ASTN_init(ASTN_SIMPLE_STMT_PRINTLN, NULL, $1, NULL, NULL, NULL);
 						}
 			;
 			
-			
+
+
 println_stmt		:	PRINTLN '(' expr ')' ';'
 						{
 							smb = ST_pop(st);
 							check_println(smb);
 							$$ = ASTN_init(ASTN_PRINTLN_STMT, smb, $3, NULL, NULL, NULL);
 						}
-			;
-						
+			;	
+
+
+		
 declaration		:	type id_list ';'
 						{
 							Symbol *dummy = $1->wrapped_symbol;
@@ -147,6 +168,8 @@ declaration		:	type id_list ';'
 						}
 			;
 			
+
+
 type			:	INT
 						{
 							smb = SMB_init("");
@@ -163,32 +186,30 @@ type			:	INT
 						}
 			;
 
+
+
 id_list			:	ID ',' id_list
 						{
 							smb = SMB_init($1);
-							if(!HT_add(ht, smb)){
-								fprintf(stderr, "Error: Tried to declare ID multiple times.\n");
-								exit(1);
-							}
 							$$ = ASTN_init(ASTN_ID_LIST_MORE, smb, $3, NULL, NULL, NULL);
 						}
 			|	ID
 						{
 							smb = SMB_init($1);
-							if(! (smb = HT_add(ht, smb))){
-								fprintf(stderr, "Error: Tried to declare ID multiple times.\n");
-								exit(1);
-							}
 							$$ = ASTN_init(ASTN_ID_LIST_ONE, smb, NULL, NULL, NULL, NULL);
 						}
 			;
+
+
 
 null_stmt		:	';'
 						{
 							$$ = ASTN_init(ASTN_NULL_STMT, NULL, NULL, NULL, NULL, NULL); 
 						}
 			;
-						
+				
+
+		
 assign_stmt		:	assign_expr ';'
 						{
 							smb = ST_pop(st);
@@ -196,6 +217,8 @@ assign_stmt		:	assign_expr ';'
 						}
 			;
 			
+
+
 expr			
 			:	assign_expr	{
 							smb = ST_pop(st);
@@ -209,6 +232,8 @@ expr
 							$$ = ASTN_init(ASTN_EXPR_R_VAL, smb, $1, NULL, NULL, NULL);
 						}
 			;	
+
+
 
 opassign_expr		:	assign_expr
 						{
@@ -224,10 +249,12 @@ opassign_expr		:	assign_expr
 						}	
 			;
 	
+
+
 assign_expr		:	ID '=' expr
 						{
+							Symbol *id = SMB_init($1);
 							smb = ST_pop(st);
-							Symbol *id = HT_get(ht, $1);
 							smb = check_assign(id, smb);
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_ASSIGN_EXPR, smb, $3, NULL, NULL, NULL);							
@@ -235,7 +262,7 @@ assign_expr		:	ID '=' expr
 			;
 
 
-						
+		
 opbool_expr		:	bool_expr
 						{
 							smb = ST_pop(st);
@@ -250,7 +277,8 @@ opbool_expr		:	bool_expr
 						}
 			;
 							
-							
+				
+			
 open_for_stmt		:	FOR '(' opassign_expr ';' opbool_expr ';' opassign_expr ')' open_stmt
 						{
 							ST_pop(st);
@@ -260,6 +288,8 @@ open_for_stmt		:	FOR '(' opassign_expr ';' opbool_expr ';' opassign_expr ')' ope
 						}
 			;
 
+
+
 closed_for_stmt		:	FOR '(' opassign_expr ';' opbool_expr ';' opassign_expr ')' closed_stmt
 						{
 							ST_pop(st);
@@ -268,7 +298,9 @@ closed_for_stmt		:	FOR '(' opassign_expr ';' opbool_expr ';' opassign_expr ')' c
 							$$ = ASTN_init(ASTN_CLOSED_FOR_STMT, smb, $3, $5, $7, $9); 						
 						}
 			;
-							
+			
+
+				
 open_while_stmt		:	WHILE '(' bool_expr ')' open_stmt
 						{
 
@@ -277,12 +309,16 @@ open_while_stmt		:	WHILE '(' bool_expr ')' open_stmt
 						}
 			;
 
+
+
 closed_while_stmt	:	WHILE '(' bool_expr ')' closed_stmt
 						{
 							smb = ST_pop(st);
 							$$ = ASTN_init(ASTN_CLOSED_WHILE_STMT, smb, $3, $5, NULL, NULL);
 						}
 			;
+
+
 
 open_if_stmt		:	IF '(' bool_expr ')' stmt
 						{
@@ -296,13 +332,17 @@ open_if_stmt		:	IF '(' bool_expr ')' stmt
 						}
 			;
 
+
+
 closed_if_stmt		:	IF '(' bool_expr ')' closed_stmt ELSE closed_stmt
 						{
 							smb = ST_pop(st);
 							$$ = ASTN_init(ASTN_CLOSED_IF_STMT, smb, $3, $5, $7, NULL);
 						}
 			;
-							
+			
+
+				
 bool_expr		:	expr EQ_OP expr
 						{
 							Symbol *temp = ST_pop(st);
@@ -353,6 +393,8 @@ bool_expr		:	expr EQ_OP expr
 						}
 			;
 
+
+
 r_val			:	r_val '+' term
 						{
 							Symbol *temp = ST_pop(st);
@@ -377,7 +419,9 @@ r_val			:	r_val '+' term
 							$$ = ASTN_init(ASTN_R_VAL_TERM, smb, $1, NULL, NULL, NULL);	
 						}
 			;
-					
+				
+
+	
 term			:	term '*' factor
 						{
 							Symbol *temp = ST_pop(st);
@@ -402,7 +446,9 @@ term			:	term '*' factor
 							$$ = ASTN_init(ASTN_TERM_FACTOR, smb, $1, NULL, NULL, NULL);
 						}
 			;
-				
+			
+
+	
 factor			:	'(' expr ')'
 						{
 							smb = ST_pop(st);
@@ -418,11 +464,8 @@ factor			:	'(' expr ')'
 						}
 			|	ID
 						{
-							smb = HT_get(ht, $1);
-							if(!smb){
-								fprintf(stderr, "Error: Tried to use ID before declaration.\n");
-								exit(1);
-							}
+							smb = SMB_init($1);
+							smb = check_id_reference(smb);
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_FACTOR_ID, smb, NULL, NULL, NULL, NULL);
 						}
@@ -433,6 +476,8 @@ factor			:	'(' expr ')'
 							$$ = ASTN_init(ASTN_FACTOR_NUM, smb, $1, NULL, NULL, NULL);
 						}
 			;
+
+
 
 num			:	INT_CONST
 						{
@@ -450,6 +495,5 @@ num			:	INT_CONST
 							ST_push(st, smb);
 							$$ = ASTN_init(ASTN_NUM_FLOAT, smb, NULL, NULL, NULL, NULL);
 						}
-			;			
-							
+			;						
 %%

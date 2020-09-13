@@ -472,7 +472,7 @@ char *yytext;
 #include "lexer_utils.h"
 #include "globals.h"
 
-int debug = 1;
+int debug = FALSE;
 
 #line 477 "lex.yy.c"
 #line 478 "lex.yy.c"

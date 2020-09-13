@@ -5,7 +5,7 @@
 #include "lexer_utils.h"
 #include "globals.h"
 
-int debug = 1;
+int debug = FALSE;
 
 %}
 

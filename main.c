@@ -6,9 +6,9 @@
 #include "structures.h"
 #include "code_gen.h"
 
-extern Hashtable *ht;
-extern Stack *st;
-extern AST_Node *root;
+Hashtable *ht;
+Stack *st;
+AST_Node *root;
 
 
 void yyerror(char const *err){
