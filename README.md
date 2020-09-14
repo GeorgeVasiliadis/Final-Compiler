@@ -1,2 +1,2 @@
-# MIPS-Compiler
-A simplified, MIPS-compatible compiler, written in C.
+# Final Language
+A simplified, MIPS-compatible language, written in C.
